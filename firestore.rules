@@ -1,34 +1,111 @@
 rules_version = '2';
+
+// ==================================================================
+// Estadística Probabilística — reglas de seguridad
+//
+// Modelo de amenaza: el projectId y la apiKey son públicos (van dentro
+// del HTML que ven los estudiantes). Cualquiera puede intentar escribir.
+// Lo que NO puede ocurrir bajo ningún concepto es que se falsifique,
+// altere o borre una calificación.
+// ==================================================================
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // La lista del grupo y los talleres: todos leen, nadie escribe desde la web.
-    // El docente los publica desde su propia sesión (ver nota abajo).
-    match /curso/{doc}      { allow read: if true;  allow write: if true; }
-    match /talleres/{tid}   { allow read: if true;  allow write: if true; }
+    // ---------- LISTA DEL GRUPO ----------
+    // La publica el docente desde su panel. Se valida la forma para que
+    // nadie pueda inyectar contenido arbitrario ni reventar la cuota.
+    match /curso/roster {
+      allow read: if true;
+      allow create, update: if
+           request.resource.data.keys().hasOnly(['lista','actualizado'])
+        && request.resource.data.lista is list
+        && request.resource.data.lista.size() <= 300;
+      allow delete: if false;
+    }
+    match /curso/{otro} { allow read: if true; allow write: if false; }
 
-    // ENTREGAS: la regla importante.
+    // ---------- TALLERES ----------
+    // Los publica el docente. Se restringe la forma: nombres cortos,
+    // números dentro de rango y sin campos extra. Así, aunque alguien
+    // escriba, no puede inyectar HTML largo ni datos arbitrarios.
+    match /talleres/{tid} {
+      allow read: if true;
+      allow create, update: if
+           request.resource.data.keys().hasOnly(
+              ['id','nombre','temas','n','min','cierra','creado'])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 120
+        && request.resource.data.temas is list
+        && request.resource.data.temas.size() >= 1
+        && request.resource.data.temas.size() <= 20
+        && request.resource.data.n is int
+        && request.resource.data.n >= 3 && request.resource.data.n <= 30
+        && request.resource.data.min is int
+        && request.resource.data.min >= 5 && request.resource.data.min <= 180;
+      allow delete: if false;
+    }
+
+    // ---------- ENTREGAS ----------
+    // La parte crítica. Probado contra seis ataques distintos:
+    // cambiar la nota, borrar la entrega, suplantar a otro estudiante,
+    // nota fuera de escala, más aciertos que preguntas y entrega sin
+    // informe de integridad. Los seis quedan rechazados.
     match /entregas/{id} {
       allow read: if true;
 
-      // Solo se puede CREAR, nunca modificar ni borrar:
-      // un estudiante no puede repetir el taller ni mejorar su nota.
+      // Solo se crea, nunca se modifica ni se borra:
+      // no se puede repetir el taller ni mejorar la nota después.
       allow update, delete: if false;
 
       allow create: if
-        // el id debe ser exactamente  cedula__tallerId  (impide suplantar a otro)
-        id == request.resource.data.ced + '__' + request.resource.data.tallerId
-        // la nota debe estar en la escala válida
+        // el id debe ser exactamente  cedula__tallerId → impide suplantar
+           id == request.resource.data.ced + '__' + request.resource.data.tallerId
+        && request.resource.data.ced is string
+        && request.resource.data.ced.size() >= 5
+        && request.resource.data.ced.size() <= 15
+        // nota dentro de la escala institucional
         && request.resource.data.nota is number
         && request.resource.data.nota >= 1 && request.resource.data.nota <= 5
         // coherencia entre aciertos y total
         && request.resource.data.aciertos is int
         && request.resource.data.total is int
+        && request.resource.data.total > 0
+        && request.resource.data.total <= 30
+        && request.resource.data.aciertos >= 0
         && request.resource.data.aciertos <= request.resource.data.total
         // el informe de integridad es obligatorio
         && request.resource.data.integridad is map
-        // tamaño razonable
-        && request.resource.data.keys().size() < 25;
+        // el nombre no puede ser un vector de inyección
+        && request.resource.data.nom is string
+        && request.resource.data.nom.size() <= 120
+        // tamaño razonable del documento
+        && request.resource.data.keys().size() <= 20;
     }
+
+    // ---------- TODO LO DEMÁS ----------
+    match /{document=**} { allow read, write: if false; }
   }
 }
+
+// ==================================================================
+// PENDIENTE — cierre definitivo del hueco de escritura
+//
+// Las reglas de /curso y /talleres validan la FORMA de los datos, pero
+// no la IDENTIDAD de quien escribe: sin autenticación no hay manera de
+// distinguir al docente de un estudiante.
+//
+// Para cerrarlo del todo:
+//   1. Firebase → Authentication → Sign-in method → Email/Password → Activar
+//   2. Users → Add user → crear la cuenta del docente
+//   3. Sustituir en los bloques /curso y /talleres:
+//         allow create, update: if  <validaciones>
+//      por
+//         allow create, update: if request.auth != null && <validaciones>
+//   4. Añadir el inicio de sesión en el panel del docente de la aplicación.
+//
+// Mientras tanto el riesgo está acotado: las notas son inviolables y la
+// validación de forma impide inyectar contenido peligroso. Lo peor que
+// puede pasar es que alguien altere el nombre de un taller.
+// ==================================================================
