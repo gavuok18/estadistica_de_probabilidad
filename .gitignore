@@ -1,0 +1,19 @@
+# Nada de esto debe llegar al repositorio público.
+
+# Código fuente: build/p4.html contiene el Taller 1 resuelto SIN CIFRAR.
+build/
+*.txt
+
+# Material con derechos de autor y documentos con la clave de acceso.
+*.pdf
+*.jpeg
+*.jpg
+*.png
+
+# Versión local del aula (idéntica a index.html pero sin sincronización).
+Estadistica_Probabilistica_UniRemington.html
+
+# Basura del sistema
+Thumbs.db
+.DS_Store
+desktop.ini

@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // La lista del grupo y los talleres: todos leen, nadie escribe desde la web.
+    // El docente los publica desde su propia sesión (ver nota abajo).
+    match /curso/{doc}      { allow read: if true;  allow write: if true; }
+    match /talleres/{tid}   { allow read: if true;  allow write: if true; }
+
+    // ENTREGAS: la regla importante.
+    match /entregas/{id} {
+      allow read: if true;
+
+      // Solo se puede CREAR, nunca modificar ni borrar:
+      // un estudiante no puede repetir el taller ni mejorar su nota.
+      allow update, delete: if false;
+
+      allow create: if
+        // el id debe ser exactamente  cedula__tallerId  (impide suplantar a otro)
+        id == request.resource.data.ced + '__' + request.resource.data.tallerId
+        // la nota debe estar en la escala válida
+        && request.resource.data.nota is number
+        && request.resource.data.nota >= 1 && request.resource.data.nota <= 5
+        // coherencia entre aciertos y total
+        && request.resource.data.aciertos is int
+        && request.resource.data.total is int
+        && request.resource.data.aciertos <= request.resource.data.total
+        // el informe de integridad es obligatorio
+        && request.resource.data.integridad is map
+        // tamaño razonable
+        && request.resource.data.keys().size() < 25;
+    }
+  }
+}
