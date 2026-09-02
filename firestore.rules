@@ -3,37 +3,57 @@ rules_version = '2';
 // ==================================================================
 // Estadística Probabilística — reglas de seguridad
 //
-// Modelo de amenaza: el projectId y la apiKey son públicos (van dentro
-// del HTML que ven los estudiantes). Cualquiera puede intentar escribir.
-// Lo que NO puede ocurrir bajo ningún concepto es que se falsifique,
-// altere o borre una calificación.
+// TRES PERFILES
+//   · Administrador  gavuok@gmail.com
+//        Todo lo del docente, más borrar en bloque y gestionar la base.
+//   · Docente        jose.castro@uniremington.edu.co
+//        Lee, edita y borra notas y entregas. Publica talleres.
+//   · Estudiante     sin cuenta
+//        Solo puede CREAR su propia entrega. No lee las de nadie,
+//        ni siquiera las suyas: su nota la ve al terminar y queda
+//        guardada en su propio navegador.
+//
+// El projectId y la apiKey son públicos (van dentro del HTML). Por eso
+// la seguridad no puede depender de esconderlos, sino de estas reglas.
 // ==================================================================
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function esAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'gavuok@gmail.com';
+    }
+    function esDocente() {
+      return request.auth != null && (
+           request.auth.token.email == 'gavuok@gmail.com'
+        || request.auth.token.email == 'jose.castro@uniremington.edu.co'
+      );
+    }
+
     // ---------- LISTA DEL GRUPO ----------
-    // La publica el docente desde su panel. Se valida la forma para que
-    // nadie pueda inyectar contenido arbitrario ni reventar la cuota.
+    // La leen los estudiantes para elegir su nombre en el desplegable.
+    // Solo el docente la publica.
     match /curso/roster {
       allow read: if true;
-      allow create, update: if
-           request.resource.data.keys().hasOnly(['lista','actualizado'])
+      allow write: if esDocente()
+        && request.resource.data.keys().hasOnly(['lista','actualizado'])
         && request.resource.data.lista is list
         && request.resource.data.lista.size() <= 300;
-      allow delete: if false;
     }
-    match /curso/{otro} { allow read: if true; allow write: if false; }
+    match /curso/{otro} {
+      allow read: if true;
+      allow write: if esDocente();
+    }
 
     // ---------- TALLERES ----------
-    // Los publica el docente. Se restringe la forma: nombres cortos,
-    // números dentro de rango y sin campos extra. Así, aunque alguien
-    // escriba, no puede inyectar HTML largo ni datos arbitrarios.
+    // Los estudiantes los leen para poder presentarlos.
+    // Solo el docente los publica, modifica o retira.
     match /talleres/{tid} {
       allow read: if true;
-      allow create, update: if
-           request.resource.data.keys().hasOnly(
-              ['id','nombre','temas','n','min','cierra','creado'])
+      allow create, update: if esDocente()
+        && request.resource.data.keys().hasOnly(
+             ['id','nombre','temas','n','min','cierra','creado'])
         && request.resource.data.nombre is string
         && request.resource.data.nombre.size() > 0
         && request.resource.data.nombre.size() <= 120
@@ -44,20 +64,23 @@ service cloud.firestore {
         && request.resource.data.n >= 3 && request.resource.data.n <= 30
         && request.resource.data.min is int
         && request.resource.data.min >= 5 && request.resource.data.min <= 180;
-      allow delete: if false;
+      allow delete: if esDocente();
     }
 
     // ---------- ENTREGAS ----------
-    // La parte crítica. Probado contra seis ataques distintos:
-    // cambiar la nota, borrar la entrega, suplantar a otro estudiante,
-    // nota fuera de escala, más aciertos que preguntas y entrega sin
-    // informe de integridad. Los seis quedan rechazados.
+    // Aquí viven las notas: son datos personales.
+    //
+    //   LECTURA  solo docente y administrador.
+    //            Un estudiante NO puede ver la nota de un compañero
+    //            ni consultando la API directamente.
+    //   CREAR    cualquiera, pero con validación estricta y una sola vez.
+    //   EDITAR   solo el docente (corregir una nota, recalificar).
+    //   BORRAR   solo el docente (anular una entrega y permitir repetirla).
     match /entregas/{id} {
-      allow read: if true;
 
-      // Solo se crea, nunca se modifica ni se borra:
-      // no se puede repetir el taller ni mejorar la nota después.
-      allow update, delete: if false;
+      allow read: if esDocente();
+
+      allow update, delete: if esDocente();
 
       allow create: if
         // el id debe ser exactamente  cedula__tallerId → impide suplantar
@@ -80,32 +103,16 @@ service cloud.firestore {
         // el nombre no puede ser un vector de inyección
         && request.resource.data.nom is string
         && request.resource.data.nom.size() <= 120
-        // tamaño razonable del documento
         && request.resource.data.keys().size() <= 20;
+    }
+
+    // ---------- PLANILLA DE NOTAS EN LA NUBE ----------
+    // Respaldo de la planilla del docente. Nadie más la ve.
+    match /planilla/{doc} {
+      allow read, write: if esDocente();
     }
 
     // ---------- TODO LO DEMÁS ----------
     match /{document=**} { allow read, write: if false; }
   }
 }
-
-// ==================================================================
-// PENDIENTE — cierre definitivo del hueco de escritura
-//
-// Las reglas de /curso y /talleres validan la FORMA de los datos, pero
-// no la IDENTIDAD de quien escribe: sin autenticación no hay manera de
-// distinguir al docente de un estudiante.
-//
-// Para cerrarlo del todo:
-//   1. Firebase → Authentication → Sign-in method → Email/Password → Activar
-//   2. Users → Add user → crear la cuenta del docente
-//   3. Sustituir en los bloques /curso y /talleres:
-//         allow create, update: if  <validaciones>
-//      por
-//         allow create, update: if request.auth != null && <validaciones>
-//   4. Añadir el inicio de sesión en el panel del docente de la aplicación.
-//
-// Mientras tanto el riesgo está acotado: las notas son inviolables y la
-// validación de forma impide inyectar contenido peligroso. Lo peor que
-// puede pasar es que alguien altere el nombre de un taller.
-// ==================================================================
