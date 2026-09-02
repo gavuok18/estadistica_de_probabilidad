@@ -6,10 +6,10 @@
    Mientras diga "TU-PROYECTO", la aplicación funciona en modo local.
    ================================================================== */
 window.FIREBASE_CONFIG = {
-  apiKey:            "TU-API-KEY",
-  authDomain:        "TU-PROYECTO.firebaseapp.com",
-  projectId:         "TU-PROYECTO",
-  storageBucket:     "TU-PROYECTO.appspot.com",
-  messagingSenderId: "000000000000",
-  appId:             "1:000000000000:web:0000000000000000000000"
+  apiKey:            "AIzaSyDBr10SkYhPLjCIuEHDa9rFmadxg4xieB0",
+  authDomain:        "estadistica-probabilidad.firebaseapp.com",
+  projectId:         "estadistica-probabilidad",
+  storageBucket:     "estadistica-probabilidad.firebasestorage.app",
+  messagingSenderId: "437064876737",
+  appId:             "1:437064876737:web:34444657a62bc2f8a7ca40"
 };
