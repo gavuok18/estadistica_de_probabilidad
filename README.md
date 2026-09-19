@@ -27,7 +27,50 @@ que el docente lleve las notas del grupo.
 | 10 · Ideas | Propuestas de ampliación |
 | 11 · Seguimiento y notas | Planilla del docente, Excel y certificados |
 | 12 · Talleres interactivos | Talleres autocalificados para el estudiante |
-| 13 · Talleres y entregas | Panel del docente: crear talleres y ver entregas |
+| 13 · Talleres y entregas | Panel del docente: talleres, entregas, accesos y actividad |
+
+## Acceso
+
+Al aula se entra con cuenta. El estudiante escribe **su cédula** como usuario; la primera vez, la
+contraseña es también su cédula, y puede cambiarla él mismo desde la barra azul que le aparece
+arriba. El docente y el administrador entran con su correo.
+
+Crear las cuentas es trabajo de un botón: en *Talleres y entregas → Cuentas de los estudiantes*
+aparece la lista de la planilla con **Crear acceso** al lado de cada nombre, y un **Crear los accesos
+que faltan** para hacerlos todos de una vez. No hay que pasar por la consola de Firebase, y crear
+cuentas no cierra la sesión del docente.
+
+Si un estudiante olvida su contraseña: en la consola de Firebase, *Authentication → Users*, se borra
+esa cuenta y se vuelve a pulsar *Crear acceso*. No se pierde nada de su progreso, porque el
+seguimiento se guarda por cédula y no por cuenta.
+
+## Seguimiento de la lectura
+
+Mientras el estudiante estudia, la aplicación anota módulo a módulo cuántas veces entró, cuánto
+tiempo estuvo con la página delante —solo cuenta el tiempo con la pestaña activa— y hasta dónde llegó
+leyendo. Un módulo se da por **leído** cuando ha recorrido el 90 % de su contenido y le ha dedicado un
+tiempo mínimo, que la propia aplicación calcula según lo que ocupa cada módulo (unas 180 palabras por
+minuto). El docente puede subir o bajar esa exigencia, y lo ya registrado se vuelve a evaluar solo.
+
+Los 18 problemas del banco piden ahora **la respuesta antes de enseñar la solución**. Se admite coma o
+punto decimal, fracción (`27/62`) y porcentaje (`43,55 %`). La aplicación dice qué está bien y qué
+mal, y registra el intento y el acierto.
+
+El estudiante ve en la portada lo mismo que ve el docente: cuántos módulos lleva leídos, cuántos
+ejercicios ha resuelto y cuánto tiempo ha estudiado.
+
+### La nota de Seguimiento y asistencia
+
+En *Talleres y entregas → Actividad en la app* hay una matriz de estudiantes por módulos, con lo que
+cada uno abrió, terminó y resolvió, exportable a Excel. De ahí sale la evaluación 3 de la planilla:
+
+```
+Seguimiento y asistencia = 50 % asistencia presencial + 50 % actividad en la app
+        actividad en la app = 60 % módulos leídos + 40 % ejercicios resueltos
+```
+
+Los cuatro porcentajes se editan, igual que la lista de módulos que se exigen. Quien no ha entrado
+nunca cuenta 1,0 en la mitad de la app, y la aplicación avisa de cuántos están en ese caso.
 
 ## Talleres interactivos
 
@@ -52,8 +95,8 @@ promedio—. Incluye control de asistencia por sesión y gráfica de evolución 
 
 ## Puesta en marcha
 
-La aplicación funciona tal cual, en modo local, sin configurar nada. Para que las notas de los
-estudiantes lleguen al docente hay que conectar Firebase:
+Hay que conectar Firebase: es lo que sostiene el acceso de los estudiantes, el seguimiento y las
+notas del grupo.
 
 1. Entrar a [firebase.google.com](https://firebase.google.com) → **Crear un proyecto** (sin Analytics).
 2. **Compilación → Firestore Database → Crear base de datos** → modo **producción** → región
@@ -62,12 +105,29 @@ estudiantes lleguen al docente hay que conectar Firebase:
    `firebaseConfig`.
 4. Pegar esos valores en [`config.js`](config.js).
 5. En **Firestore → Reglas**, pegar el contenido de [`firestore.rules`](firestore.rules) y publicar.
+6. En **Authentication → Sign-in method**, activar **Correo electrónico/contraseña** y crear ahí las
+   dos cuentas del profesorado. Las de los estudiantes se crean luego desde la propia aplicación.
+
+Los pasos 5 y 6 no son opcionales: sin ellos no entra nadie.
+
+Sin conexión con el servidor, la aplicación deja entrar igual y sirve como material de estudio. Lo
+que se lea y se resuelva queda guardado en ese equipo y se suma a la ficha del estudiante la primera
+vez que entre con su cédula.
 
 ### Sobre las reglas de seguridad
 
+La cuenta de cada estudiante es el correo interno `<cédula>@alumnos.estprob.local`, que no existe como
+buzón: es solo la forma que tiene Firebase de identificarlo. Ese correo, firmado por Firebase, es lo
+que comprueban las reglas, así que **nadie puede escribir el progreso ni la entrega de otro** aunque
+lo intente directamente contra la API.
+
+Tener cuenta tampoco basta: el estudiante necesita además su ficha en `/alumnos`, que solo escribe el
+docente. Quien se registre por su cuenta se queda en la puerta.
+
 Un estudiante **solo puede crear su propia entrega, una sola vez**. El identificador del documento
-debe ser exactamente `cédula__idTaller`, lo que impide suplantar a otro; y `update` y `delete` están
-prohibidos, así que nadie puede repetir el taller ni mejorar su nota después.
+debe ser exactamente `cédula__idTaller` y la cédula tiene que ser la suya; `update` y `delete` están
+prohibidos, así que nadie puede repetir el taller ni mejorar su nota después. Las notas y el progreso
+del grupo solo los lee el docente.
 
 ## Archivos
 

@@ -7,11 +7,13 @@ rules_version = '2';
 //   · Administrador  gavuok@gmail.com
 //        Todo lo del docente, más borrar en bloque y gestionar la base.
 //   · Docente        jose.castro@uniremington.edu.co
-//        Lee, edita y borra notas y entregas. Publica talleres.
-//   · Estudiante     sin cuenta
-//        Solo puede CREAR su propia entrega. No lee las de nadie,
-//        ni siquiera las suyas: su nota la ve al terminar y queda
-//        guardada en su propio navegador.
+//        Lee, edita y borra notas, entregas y progreso. Publica talleres
+//        y da de alta las cuentas de los estudiantes.
+//   · Estudiante     entra con su cédula
+//        La cuenta se crea con el correo interno  <cédula>@alumnos.estprob.local
+//        Ese correo ES su identidad: la cédula del documento tiene que
+//        coincidir con la del correo, así que nadie puede escribir el
+//        progreso ni la entrega de otro.
 //
 // El projectId y la apiKey son públicos (van dentro del HTML). Por eso
 // la seguridad no puede depender de esconderlos, sino de estas reglas.
@@ -30,27 +32,88 @@ service cloud.firestore {
         || request.auth.token.email == 'jose.castro@uniremington.edu.co'
       );
     }
+    // Cualquier sesión iniciada: estudiante o docente.
+    function autenticado() {
+      return request.auth != null;
+    }
+    // El que ha entrado ES el dueño de esa cédula. La comprobación no
+    // depende de ningún dato que el cliente pueda falsear: solo del
+    // correo que Firebase Authentication firmó en el token.
+    function esEseAlumno(ced) {
+      return request.auth != null
+          && request.auth.token.email == ced + '@alumnos.estprob.local';
+    }
 
     // ---------- LISTA DEL GRUPO ----------
-    // La leen los estudiantes para elegir su nombre en el desplegable.
-    // Solo el docente la publica.
+    // Nombres y cédulas del curso: son datos personales, así que ya no
+    // se leen sin iniciar sesión. Solo el docente la publica.
     match /curso/roster {
-      allow read: if true;
+      allow read: if autenticado();
       allow write: if esDocente()
         && request.resource.data.keys().hasOnly(['lista','actualizado'])
         && request.resource.data.lista is list
         && request.resource.data.lista.size() <= 300;
     }
     match /curso/{otro} {
-      allow read: if true;
+      allow read: if autenticado();
       allow write: if esDocente();
     }
 
+    // ---------- CUENTAS DE LOS ESTUDIANTES ----------
+    // Un documento por estudiante habilitado. La app lo consulta al
+    // entrar: si la cuenta existe en Authentication pero no tiene esta
+    // ficha, no está matriculada y no se le abre nada. Así, alguien que
+    // se registre por su cuenta contra la API no consigue entrar.
+    //
+    //   get     el propio estudiante (solo la suya) y el docente
+    //   list    solo el docente
+    //   write   solo el docente
+    match /alumnos/{ced} {
+      allow get:  if esDocente() || esEseAlumno(ced);
+      allow list: if esDocente();
+      allow create, update: if esDocente()
+        && request.resource.data.keys().hasOnly(
+             ['ced','nom','usuario','creado','creadoPor','uid','activo'])
+        && request.resource.data.ced == ced
+        && request.resource.data.nom is string
+        && request.resource.data.nom.size() > 0
+        && request.resource.data.nom.size() <= 120;
+      allow delete: if esDocente();
+    }
+
+    // ---------- PROGRESO EN LA APP ----------
+    // Qué módulos ha visitado y completado cada estudiante, cuánto
+    // tiempo les dedicó y qué ejercicios resolvió. Alimenta el 50 % de
+    // la nota de Seguimiento y asistencia.
+    //
+    //   El estudiante escribe SOLO su propio documento, y el id del
+    //   documento debe ser su cédula, la misma que lleva su correo.
+    //   No puede leer el de nadie más, ni siquiera listar la colección.
+    match /progreso/{ced} {
+
+      allow get:  if esDocente() || esEseAlumno(ced);
+      allow list: if esDocente();
+
+      allow create, update: if (esDocente() || esEseAlumno(ced))
+        && request.resource.data.ced == ced
+        && request.resource.data.keys().hasOnly(
+             ['ced','nom','mod','ej','lab','actualizado','clave','entro'])
+        && request.resource.data.nom is string
+        && request.resource.data.nom.size() <= 120
+        && request.resource.data.mod is map
+        && request.resource.data.mod.keys().size() <= 40
+        && request.resource.data.ej is map
+        && request.resource.data.ej.keys().size() <= 60;
+
+      // Anular el progreso de un estudiante para que repita el trabajo.
+      allow delete: if esDocente();
+    }
+
     // ---------- TALLERES ----------
-    // Los estudiantes los leen para poder presentarlos.
+    // Los estudiantes los leen para poder presentarlos, ya con sesión.
     // Solo el docente los publica, modifica o retira.
     match /talleres/{tid} {
-      allow read: if true;
+      allow read: if autenticado();
       allow create, update: if esDocente()
         && request.resource.data.keys().hasOnly(
              ['id','nombre','temas','n','min','cierra','creado'])
@@ -73,7 +136,10 @@ service cloud.firestore {
     //   LECTURA  solo docente y administrador.
     //            Un estudiante NO puede ver la nota de un compañero
     //            ni consultando la API directamente.
-    //   CREAR    cualquiera, pero con validación estricta y una sola vez.
+    //   CREAR    solo el propio estudiante, con validación estricta y
+    //            una sola vez. Ahora que se entra con cuenta, el id ya
+    //            no se cree a pies juntillas: tiene que coincidir con
+    //            la cédula del correo que firmó Firebase.
     //   EDITAR   solo el docente (corregir una nota, recalificar).
     //   BORRAR   solo el docente (anular una entrega y permitir repetirla).
     match /entregas/{id} {
@@ -85,6 +151,8 @@ service cloud.firestore {
       allow create: if
         // el id debe ser exactamente  cedula__tallerId → impide suplantar
            id == request.resource.data.ced + '__' + request.resource.data.tallerId
+        // y la cédula debe ser la de quien inició sesión
+        && esEseAlumno(request.resource.data.ced)
         && request.resource.data.ced is string
         && request.resource.data.ced.size() >= 5
         && request.resource.data.ced.size() <= 15

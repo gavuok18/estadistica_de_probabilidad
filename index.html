@@ -279,7 +279,7 @@ details.sol .body{padding:16px 18px;border-top:1px solid var(--line);animation:f
 /* ---------- CONTROLES ---------- */
 label.fl{display:block;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3);margin-bottom:5px}
-input[type=text],input[type=number],select,textarea{
+input[type=text],input[type=number],input[type=password],input[type=email],select,textarea{
   width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r-s);
   background:var(--surface);color:var(--ink);font:inherit;font-size:.9rem;transition:.18s;
   font-family:var(--sans)}
@@ -497,9 +497,112 @@ aside.toc .subnav a.on::before{background:var(--azul)}
   .print-only{display:block!important}
   .step::before{box-shadow:0 0 0 3px #fff}
 }
+
+/* ==================================================================
+   PUERTA DE ACCESO · cubre la aplicación hasta iniciar sesión
+   ================================================================== */
+.puerta{display:none}
+/* Sin JavaScript no se puede cerrar nada, y dejar la puerta echada
+   convertiria la app en una pantalla muerta: solo se muestra si el
+   navegador ejecuta scripts, igual que hace el resto de la aplicacion. */
+html.js .puerta:not([hidden]){position:fixed;inset:0;z-index:5000;background:var(--paper);
+  overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:28px 16px 60px}
+body.cerrado{overflow:hidden}
+.puerta .caja{width:100%;max-width:440px;margin:auto;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-lg);padding:30px 28px 26px}
+.puerta .marca{text-align:center;margin-bottom:22px}
+.puerta .marca .kick{display:block;font-family:var(--sans);font-size:.7rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.puerta .marca h1{font-family:var(--serif);font-size:1.62rem;line-height:1.15;margin:0;color:var(--ink)}
+.puerta .marca h1 em{color:var(--azul);font-style:italic}
+.puerta .quien{display:flex;gap:6px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r-s);padding:4px;margin-bottom:20px}
+.puerta .quien button{flex:1;border:0;background:transparent;border-radius:6px;padding:9px 6px;
+  font-family:var(--sans);font-size:.83rem;font-weight:700;color:var(--ink-3);cursor:pointer;transition:.16s}
+.puerta .quien button.on{background:var(--surface);color:var(--azul);box-shadow:var(--shadow)}
+.puerta .field{margin-bottom:13px}
+.puerta .btn{width:100%;justify-content:center;margin-top:4px}
+.puerta .msg{margin-top:13px;font-size:.86rem;line-height:1.5;min-height:1.2em}
+.puerta .msg.err{color:var(--terra)}
+.puerta .msg.ok{color:var(--verde)}
+.puerta .pie{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:.79rem;line-height:1.6;color:var(--ink-3)}
+.puerta .pie b{color:var(--ink-2)}
+.puerta .enlace{background:none;border:0;padding:0;color:var(--azul);font:inherit;
+  font-size:.79rem;text-decoration:underline;cursor:pointer}
+.puerta .cargando{text-align:center;padding:30px 0;color:var(--ink-3);font-size:.9rem}
+
+/* ---------- barra de sesión del estudiante ---------- */
+.mibar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--azul-soft);border:1px solid var(--line);border-left:4px solid var(--azul);
+  border-radius:var(--r-s);padding:9px 14px;margin:0 0 18px;font-size:.84rem}
+.mibar .yo{font-weight:800;color:var(--azul)}
+.mibar .sep{flex:1 1 auto}
+.mibar .chip{font-family:var(--mono);font-size:.76rem;background:var(--surface);
+  border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--ink-2)}
+
+/* ---------- tarjeta «mi progreso» del estudiante ---------- */
+.miprog .barras{display:grid;gap:9px;margin-top:4px}
+.miprog .fila{display:grid;grid-template-columns:minmax(120px,1.4fr) 1fr auto;
+  gap:10px;align-items:center;font-size:.85rem}
+.miprog .fila .nm{font-weight:600;color:var(--ink-2)}
+.miprog .fila .nm small{display:block;font-weight:400;color:var(--ink-3);font-size:.76rem}
+.barra{height:9px;border-radius:20px;background:var(--surface-2);
+  border:1px solid var(--line);overflow:hidden}
+.barra i{display:block;height:100%;background:var(--azul);border-radius:20px;transition:width .5s ease}
+.barra.v i{background:var(--verde)}
+.barra.d i{background:var(--dorado)}
+.miprog .pc{font-family:var(--mono);font-size:.8rem;font-weight:700;
+  min-width:56px;text-align:right;color:var(--ink-2)}
+
+/* ---------- respuesta verificada en el banco de problemas ---------- */
+.pbresp{margin:12px 0 0;padding:13px 14px;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:var(--r-s)}
+.pbresp .tit{font-family:var(--sans);font-size:.72rem;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+.pbresp .campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:9px}
+.pbresp .campo label{display:block;font-size:.78rem;font-weight:600;color:var(--ink-2);margin-bottom:3px}
+.pbresp .campo input,.pbresp .campo select{width:100%}
+.pbresp .campo.bien input,.pbresp .campo.bien select{border-color:var(--verde);background:var(--verde-soft)}
+.pbresp .campo.mal input,.pbresp .campo.mal select{border-color:var(--terra);background:var(--terra-soft)}
+.pbresp .acc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:11px}
+.pbresp .ver{font-size:.84rem;font-weight:700}
+.pbresp .ver.ok{color:var(--verde)}
+.pbresp .ver.no{color:var(--terra)}
+.pbresp .ayuda{font-size:.77rem;color:var(--ink-3);margin:9px 0 0;line-height:1.5}
+
+/* ---------- matriz de actividad del docente ---------- */
+.matriz{font-size:.8rem}
+.matriz th{font-size:.68rem;padding:6px 4px}
+.matriz td{padding:5px 4px;text-align:center}
+.matriz td.nom{text-align:left;font-weight:700;white-space:nowrap;max-width:270px}
+/* el nombre se recorta si hace falta, pero los avisos que lo acompañan
+   («sin cuenta», «fuera de la planilla») no se pueden perder */
+.matriz td.nom .n{display:inline-block;max-width:160px;overflow:hidden;
+  text-overflow:ellipsis;vertical-align:middle}
+.matriz .cel{display:inline-block;min-width:30px;padding:2px 5px;border-radius:5px;
+  font-family:var(--mono);font-size:.71rem;font-weight:700;line-height:1.5}
+.matriz .cel.ok{background:var(--verde-soft);color:var(--verde)}
+.matriz .cel.par{background:var(--dorado-soft);color:var(--dorado)}
+.matriz .cel.no{background:var(--surface-2);color:var(--ink-3)}
+.matriz tbody tr.sincuenta{opacity:.52}
+.pesos{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;align-items:end}
+.credencial{font-family:var(--mono);font-size:.82rem;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:var(--r-s);padding:11px 13px;
+  margin-top:11px;max-height:250px;overflow:auto;white-space:pre-wrap;line-height:1.7}
+@media(max-width:640px){
+  .puerta{padding:14px 12px 40px}
+  .puerta .caja{padding:24px 19px 22px}
+  .miprog .fila{grid-template-columns:1fr;gap:4px}
+  .miprog .pc{text-align:left}
+}
 </style>
 </head>
 <body>
+<!-- Puerta de acceso: la rellena accesoJS -->
+<div class="puerta noprint" id="puerta">
+  <div class="caja" id="puertaCaja"></div>
+</div>
 <script>document.documentElement.className="js";</script>
 <div id="progress"></div>
 <style id="tallerCSS">
@@ -3209,6 +3312,70 @@ o los botones <em>Anterior / Siguiente</em> del pie de cada módulo. Atajos: <co
     <div style="margin-top:10px"><button class="btn sm" id="dAsisNota">Calcular nota de asistencia y llevarla a la evaluación 3</button></div></div>
   </div>
 
+  <h3 class="sec" id="dAccesos">Cuentas de los estudiantes</h3>
+  <div class="card noprint">
+    <p class="muted" style="margin-top:0">Cada estudiante entra con <strong>su cédula</strong> como usuario.
+    Pulsa <em>Crear acceso</em> y la cuenta queda lista al instante: no tienes que ir a la consola de Firebase
+    ni se cierra tu sesión. La contraseña inicial es también la cédula, y el estudiante puede cambiarla él mismo
+    desde la barra azul que le aparece arriba.</p>
+    <div class="inline" style="margin-bottom:12px">
+      <div class="field" style="flex:0 0 auto"><button class="btn verde" id="dAltaTodos">&#43; Crear los accesos que faltan</button></div>
+      <div class="field" style="flex:0 0 auto"><button class="btn sm" id="dAltaCopiar">&#128203; Copiar usuarios y contraseñas</button></div>
+      <div class="field" style="flex:1 1 auto;text-align:right"><span class="chip g" id="dAltaRes">—</span></div>
+    </div>
+    <div class="tw"><table id="dTablaAlta"></table></div>
+    <div id="dAltaSalida"></div>
+    <div class="box note" style="margin-bottom:0"><span class="bt">Si un estudiante olvida su contraseña</span>
+    Entra a la consola de Firebase, <b>Authentication &rarr; Users</b>, borra esa cuenta, y aquí pulsa
+    <em>Crear acceso</em> otra vez. Vuelve a quedar con la cédula como contraseña y <b>no se pierde nada</b> de su
+    progreso, porque el seguimiento se guarda por cédula y no por cuenta.</div>
+  </div>
+
+  <h3 class="sec" id="dActividad">Actividad en la app</h3>
+  <div class="card noprint">
+    <p class="muted" style="margin-top:0">Qué módulos abrió cada estudiante, cuáles terminó de leer y cuántos
+    ejercicios del banco resolvió. Se actualiza en vivo mientras trabajan.</p>
+
+    <h4 class="sub">Qué módulos cuentan para la nota</h4>
+    <div id="dSegMods" class="pills" style="margin-bottom:6px"></div>
+    <p class="muted" style="font-size:.8rem;margin:0 0 16px">Marca los módulos que exiges leer. Los demás se
+    siguen registrando y los ves en la tabla, pero no entran en el cálculo.</p>
+
+    <h4 class="sub">Reparto de la nota</h4>
+    <div class="pesos" style="margin-bottom:6px">
+      <div class="field"><label class="fl" for="dPesoAsis">Asistencia presencial</label>
+        <input type="number" id="dPesoAsis" value="50" min="0" max="100" step="5"></div>
+      <div class="field"><label class="fl" for="dPesoApp">Actividad en la app</label>
+        <input type="number" id="dPesoApp" value="50" min="0" max="100" step="5"></div>
+      <div class="field"><label class="fl" for="dPesoMod">De la app · módulos leídos</label>
+        <input type="number" id="dPesoMod" value="60" min="0" max="100" step="5"></div>
+      <div class="field"><label class="fl" for="dPesoEj">De la app · ejercicios</label>
+        <input type="number" id="dPesoEj" value="40" min="0" max="100" step="5"></div>
+      <div class="field"><label class="fl" for="dExigencia">Exigencia de lectura</label>
+        <select id="dExigencia">
+          <option value="0.6">Suave</option>
+          <option value="1" selected>Normal</option>
+          <option value="1.6">Estricta</option>
+        </select></div>
+    </div>
+    <p class="muted" id="dPesoNota" style="font-size:.8rem;margin:0 0 16px"></p>
+
+    <div class="statgrid" id="dActStats" style="margin-bottom:16px"></div>
+    <div class="inline" style="margin-bottom:12px">
+      <div class="field" style="flex:2 1 220px"><label class="fl" for="dActBuscar">Buscar estudiante</label>
+        <input type="text" id="dActBuscar" placeholder="Nombre o cédula…"></div>
+      <div class="field" style="flex:0 0 auto"><button class="btn sm" id="dActExp">&#11015; Exportar actividad</button></div>
+    </div>
+    <div class="tw"><table class="matriz" id="dTablaAct"></table></div>
+    <p class="muted" id="dActVacio" style="display:none;text-align:center;padding:24px 10px">
+      Todavía no hay actividad registrada. Aparecerá aquí en cuanto los estudiantes entren con su cédula.</p>
+    <div class="box tip" style="margin-bottom:0"><span class="bt">Nota de Seguimiento y asistencia</span>
+    Combina la asistencia presencial que marcaste arriba con la actividad en la app, según el reparto que hayas
+    fijado, y la escribe en la <b>evaluación 3</b> de la planilla.
+    <div style="margin-top:10px"><button class="btn verde" id="dSegNota">Calcular la nota de Seguimiento y llevarla a la evaluación 3</button></div>
+    <p class="muted" id="dSegMsg" style="margin:10px 0 0"></p></div>
+  </div>
+
   <h3 class="sec" id="dEvolucion">Evolución del grupo</h3>
   <div class="card">
     <div class="svgwrap"><svg id="dEvol" viewBox="0 0 640 280" width="640" height="280"></svg></div>
@@ -4101,6 +4268,26 @@ $("#btnOpenAll").onclick = ()=>{ allOpen=!allOpen; $$("details.sol").forEach(d=>
   $("#btnOpenAll").style.color = allOpen? "var(--verde)":""; };
 
 /* ==================================================================
+   REGLA DE «MÓDULO LEÍDO»
+   Vive aquí, una sola vez, porque la usan dos sitios que tienen que
+   contar exactamente igual: la tarjeta de progreso del estudiante y
+   la matriz de actividad del docente.
+   ================================================================== */
+window.Lectura = {
+  UMBRAL_PCT: 90,
+  /* Tiempo mínimo, deducido de lo que ocupa el módulo: unas 180
+     palabras por minuto, con suelo de 45 s y techo de 15 min. La
+     exigencia (0,6 · 1 · 1,6) la fija el docente en su panel. */
+  tiempoExigido(palabras, exigencia){
+    return Math.max(45, Math.min(900, Math.round((palabras||600)/3 * (exigencia||1))));
+  },
+  completo(m, exigencia){
+    if(!m) return false;
+    return (m.p||0) >= this.UMBRAL_PCT && (m.s||0) >= this.tiempoExigido(m.w, exigencia);
+  }
+};
+
+/* ==================================================================
    ROUTER · un módulo por pantalla
    ================================================================== */
 $$("section.mod").forEach(s=> s.classList.add("view"));
@@ -4164,6 +4351,8 @@ function go(hash, push){
   if(v.id==="m12" && window.Taller) Taller.refrescar();
   if(v.id==="m13" && window.Docente){ Docente.refrescarTalleres(); Docente.refrescarEntregas();
     Docente.pintarAsistencia(); Docente.dibujarEvolucion(); }
+  if(v.id==="m13" && window.Panel) Panel.refrescar();
+  document.dispatchEvent(new CustomEvent("modulo-abierto",{detail:{id:v.id}}));
   onScroll();
 }
 function markNav(vid, exact){
@@ -5126,18 +5315,162 @@ const PROBS=[
  {c:"bayes",n:18,dif:"Avanzado",q:"El 70 % de los partidos se juegan de noche y el 30 % de día. El equipo gana el 50 % de los nocturnos y el 90 % de los diurnos. Ganó ayer: ¿qué probabilidad hay de que el partido haya sido de día?",
   s:"P(N) = 0,70, P(G|N) = 0,50 → conjunta 0,35<br>P(Dí) = 0,30, P(G|Dí) = 0,90 → conjunta 0,27<br>P(G) = 0,35 + 0,27 = 0,62<br><b>P(Dí|G) = 0,27/0,62 = 0,4355 → 43,55 %</b><br><b>P(N|G) = 0,35/0,62 = 0,5645 → 56,45 %</b><br>Control: suman 1 ✓. Antes de saber que ganó, la probabilidad de que fuera de día era 30 %; la evidencia la sube a 43,55 %."}
 ];
+/* ------------------------------------------------------------------
+   RESPUESTAS ESPERADAS
+   Una entrada por problema. Cada casilla lleva su etiqueta y el valor
+   correcto; `sn` marca las de sí/no. Las tolerancias salen solas: los
+   enteros se exigen exactos y los decimales admiten el redondeo
+   razonable de quien trabaja con calculadora.
+   ------------------------------------------------------------------ */
+const RESP = {
+ 1:[{e:"|A∪B|",v:10},{e:"|A∩B|",v:1},{e:"|A′|",v:14},{e:"|(A∩B)′|",v:19},{e:"|A△B|",v:9}],
+ 2:[{e:"No hablan ninguno",v:25},{e:"Hablan exactamente uno",v:70}],
+ 3:[{e:"|A∪B∪C|",v:160},{e:"No leen ninguno",v:40}],
+ 4:[{e:"Total de aprobados",v:550},{e:"P(Diurno)",v:0.5},{e:"P(Aprobó)",v:0.6875},
+    {e:"¿Independientes?",sn:true,v:0}],
+ 5:[{e:"P(Aprobó | Diurno)",v:0.75},{e:"P(Diurno | Aprobó)",v:0.5455}],
+ 6:[{e:"Casilla a",v:84},{e:"Casilla b",v:36},{e:"Casilla c",v:56},{e:"Casilla d",v:24}],
+ 7:[{e:"P(rey)",v:0.0769},{e:"P(corazón)",v:0.25},{e:"P(rey o corazón)",v:0.3077},
+    {e:"P(rey y corazón)",v:0.0192},{e:"¿Independientes?",sn:true,v:1}],
+ 8:[{e:"a) Al menos una",v:0.80},{e:"b) Ninguna",v:0.20},{e:"c) P(E | C)",v:0.8333},
+    {e:"d) ¿Independientes?",sn:true,v:0}],
+ 9:[{e:"a) Ambos buenos",v:0.3571},{e:"b) Ambos defectuosos",v:0.1071},
+    {e:"c) Al menos uno defectuoso",v:0.6429}],
+ 10:[{e:"Al menos un acierto",v:0.94},{e:"Exactamente un acierto",v:0.29},{e:"Los tres aciertan",v:0.21}],
+ 11:[{e:"Cifras distintas",v:840},{e:"Con repetición",v:2401},{e:"Pares sin repetir",v:360}],
+ 12:[{e:"Exactamente 3 mujeres",v:30030},{e:"Al menos 4 mujeres",v:19383}],
+ 13:[{e:"Anagramas de MATEMATICAS",v:1663200},{e:"Empiezan por vocal",v:756000}],
+ 14:[{e:"|Ω| = C(45,6)",v:8145060},{e:"Formas de acertar justo 5",v:234}],
+ 15:[{e:"P(la segunda sea roja)",v:0.40}],
+ 16:[{e:"P(A | defectuoso)",v:0.4737},{e:"P(B | defectuoso)",v:0.5263},{e:"P(defectuoso)",v:0.038}],
+ 17:[{e:"P(positivo)",v:0.0572},{e:"P(consumidor | positivo)",v:0.6643}],
+ 18:[{e:"P(ganó)",v:0.62},{e:"P(día | ganó)",v:0.4355},{e:"P(noche | ganó)",v:0.5645}]
+};
+
+/* Acepta 0,4355 · 0.4355 · 43,55 % · 27/62 · 1 663 200 · 1.663.200.
+   Devuelve TODAS las lecturas razonables del texto y se da por buena
+   la respuesta si alguna cae dentro de la tolerancia: así ni «30.030»
+   ni «0.4355» se interpretan mal por culpa del punto. */
+function lecturasDe(txt){
+  let s=String(txt==null?"":txt).trim().toLowerCase().replace(/\s/g,"").replace(/^\+/,"");
+  if(!s) return [];
+  let pct=false;
+  if(s.endsWith("%")){ pct=true; s=s.slice(0,-1); }
+  const variantes = t => {
+    const out=[];
+    /* a) el último separador es el decimal y los anteriores, de millares */
+    const i=Math.max(t.lastIndexOf("."), t.lastIndexOf(","));
+    if(i>0) out.push(t.slice(0,i).replace(/[.,]/g,"")+"."+t.slice(i+1));
+    /* b) todos son de millares, pero solo si tienen forma de millares:
+          así «30.030» puede leerse 30030, y «0,5» nunca se lee 5 */
+    if(/^\d{1,3}([.,]\d{3})+$/.test(t)) out.push(t.replace(/[.,]/g,""));
+    /* c) tal cual, con la coma como separador decimal */
+    out.push(t.replace(/,/g,"."));
+    return out;
+  };
+  const evalua = t => {
+    const b=t.indexOf("/");
+    if(b>0){
+      const x=parseFloat(t.slice(0,b)), y=parseFloat(t.slice(b+1));
+      return (isFinite(x)&&isFinite(y)&&y!==0)? x/y : NaN;
+    }
+    return parseFloat(t);
+  };
+  const crudas = s.indexOf("/")>0
+    ? [s.replace(/,/g,".")]
+    : variantes(s);
+  const vals=[];
+  crudas.forEach(t=>{ const v=evalua(t); if(isFinite(v) && vals.indexOf(v)<0) vals.push(v); });
+  return pct ? vals.map(v=>v/100) : vals;
+}
+function aciertaValor(txt, esperado){
+  const tol = Number.isInteger(esperado) ? 0.0001
+            : Math.max(0.005, Math.abs(esperado)*0.01);
+  return lecturasDe(txt).some(v => Math.abs(v-esperado) <= tol);
+}
+
 function pbRender(f){
   const box=$("#pbList"); if(!box) return;
   box.innerHTML="";
+  const prog = (window.Progreso && Progreso.datos && Progreso.datos().ej) || {};
   PROBS.filter(p=> f==="all"||p.c===f).forEach(p=>{
+    const r   = RESP[p.n] || [];
+    const est = prog["p"+p.n] || null;
+    const yaLoVio = !!(est && (est.i||0)>0);
     const d=el("div","card");
-    d.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px">'+
-      '<span class="tag i">Problema '+p.n+'</span><span class="tag '+(p.dif==="Básico"?"ok":p.dif==="Intermedio"?"wip":"no")+'">'+p.dif+'</span></div>'+
-      '<p style="margin:0 0 4px"><strong>'+p.q+'</strong></p>'+
-      '<details class="sol"><summary>Ver solución</summary><div class="body">'+p.s+'</div></details>';
+    let h='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap">'+
+      '<span class="tag i">Problema '+p.n+'</span>'+
+      '<span class="tag '+(p.dif==="Básico"?"ok":p.dif==="Intermedio"?"wip":"no")+'">'+p.dif+'</span>'+
+      '<span class="pbest">'+(est&&est.ok? '<span class="tag ok">&#10003; Resuelto</span>'
+                            : yaLoVio? '<span class="tag wip">Intentado</span>' : '')+'</span>'+
+      '</div>'+
+      '<p style="margin:0 0 4px"><strong>'+p.q+'</strong></p>';
+
+    if(r.length){
+      h+='<div class="pbresp" data-n="'+p.n+'"><div class="tit">Tu respuesta</div><div class="campos">'+
+        r.map((x,i)=>'<div class="campo" data-i="'+i+'">'+
+          '<label for="pb'+p.n+'_'+i+'">'+x.e+'</label>'+
+          (x.sn
+            ? '<select id="pb'+p.n+'_'+i+'"><option value="">—</option>'+
+              '<option value="si">Sí</option><option value="no">No</option></select>'
+            : '<input type="text" id="pb'+p.n+'_'+i+'" inputmode="decimal" placeholder="—" autocomplete="off">')+
+          '</div>').join("")+
+        '</div>'+
+        '<div class="acc">'+
+          '<button class="btn sm primary pbgo">Comprobar</button>'+
+          '<button class="btn sm pbver">No sé, ver la solución</button>'+
+          '<span class="ver"></span>'+
+        '</div>'+
+        '<p class="ayuda">Escribe el número con coma o con punto, como fracción (<code>27/62</code>) o en '+
+        'porcentaje (<code>43,55 %</code>). Se admite el redondeo a cuatro decimales.</p></div>';
+    }
+    h+='<details class="sol"'+(r.length && !yaLoVio? ' hidden':'')+
+       '><summary>Ver solución</summary><div class="body">'+p.s+'</div></details>';
+    d.innerHTML=h;
     box.appendChild(d);
   });
+
+  $$(".pbresp", box).forEach(caja=>{
+    const n=+caja.dataset.n, r=RESP[n]||[];
+    const tarjeta=caja.parentNode;
+    const sol=tarjeta.querySelector("details.sol");
+    const ver=$(".ver",caja), sello=$(".pbest",tarjeta);
+
+    const revisar=(rendirse)=>{
+      let bien=0, vacios=0;
+      r.forEach((x,i)=>{
+        const campo=$('.campo[data-i="'+i+'"]',caja);
+        const inp=$("input,select",campo);
+        const val=String(inp.value||"").trim();
+        campo.classList.remove("bien","mal");
+        if(!val){ vacios++; return; }
+        const ok = x.sn ? ((val==="si") === (x.v===1)) : aciertaValor(val, x.v);
+        campo.classList.add(ok?"bien":"mal");
+        if(ok) bien++;
+      });
+      if(!rendirse && vacios===r.length){
+        ver.className="ver no";
+        ver.textContent="Escribe al menos una respuesta antes de comprobar.";
+        return;
+      }
+      const todo = bien===r.length;
+      ver.className="ver "+(todo&&!rendirse ? "ok":"no");
+      ver.innerHTML = rendirse
+        ? "Solución abierta. Cuenta como intento, no como acierto."
+        : (todo ? "&#10003; Correcto"+(r.length>1? ", las "+r.length+" respuestas están bien":"")+"."
+                : "Llevas "+bien+" de "+r.length+". Mira la solución y revisa lo que falló.");
+      if(sol){ sol.hidden=false; sol.open=true; }
+      if(sello) sello.innerHTML = (todo&&!rendirse)
+        ? '<span class="tag ok">&#10003; Resuelto</span>' : '<span class="tag wip">Intentado</span>';
+      if(window.Progreso) Progreso.ejercicio(n, todo && !rendirse);
+    };
+
+    $(".pbgo",caja).onclick =()=> revisar(false);
+    $(".pbver",caja).onclick=()=> revisar(true);
+    $$("input",caja).forEach(i=> i.addEventListener("keydown", e=>{ if(e.key==="Enter") revisar(false); }));
+  });
 }
+
 if($("#pbList")){
   $$("#pbFilter .pill").forEach(p=> p.onclick=()=>{ $$("#pbFilter .pill").forEach(x=>x.classList.remove("on")); p.classList.add("on"); pbRender(p.dataset.pb); });
   pbRender("all");
@@ -5676,12 +6009,24 @@ function pintarIdent(){
       'Si es posible, abre el enlace en una ventana normal.</div>' + box.innerHTML;
   }
   const roster = (window.Sync && Sync.roster) ? Sync.roster : [];
+  /* Ahora se entra al aula con la cédula, así que el estudiante ya viene
+     identificado por su sesión: ni tiene que elegirse en una lista ni
+     puede ponerse el nombre de otro (las reglas lo rechazarían). */
+  const ses = (window.Sync && Sync.esAlumno && Sync.esAlumno()) ? Sync.cedula() : "";
+  if(ses){
+    const f=(Sync.ficha&&Sync.ficha())||{};
+    EST.ced=ses; EST.nom=f.nom||EST.nom||ses;
+    LS.set("estudiante",{nom:EST.nom, ced:EST.ced});
+  }
   if(EST.ced){
     box.innerHTML =
-      '<div class="idcard"><h4>Ya estás identificado</h4>'+
+      '<div class="idcard"><h4>'+(ses? 'Estás en tu sesión' : 'Ya estás identificado')+'</h4>'+
       '<div class="who"><b>'+esc(EST.nom)+'</b><br>Cédula '+esc(EST.ced)+'</div>'+
-      '<button class="btn" id="tSalir">Cambiar de estudiante</button></div>';
-    $("#tSalir").onclick=()=>{ EST.ced=null; EST.nom=null; LS.set("estudiante",null); pintarIdent(); pintarTalleres(); };
+      (ses ? '<p class="muted" style="margin:0">Presentas los talleres con esta identidad. Para cambiarla, '+
+             'sal de la sesión desde la barra azul de arriba.</p>'
+           : '<button class="btn" id="tSalir">Cambiar de estudiante</button>')+
+      '</div>';
+    if(!ses) $("#tSalir").onclick=()=>{ EST.ced=null; EST.nom=null; LS.set("estudiante",null); pintarIdent(); pintarTalleres(); };
   } else {
     box.innerHTML =
       '<div class="idcard"><h4>Identifícate para empezar</h4>'+
@@ -6643,8 +6988,313 @@ function publicarRoster(){
     Sync.publicarRoster(db.map(s=>({ced:s.ced, nom:s.nom}))).catch(()=>{});
 }
 
+/* ---------- 8 · CUENTAS DE LOS ESTUDIANTES ----------
+   El alta se hace contra una instancia secundaria de Firebase (ver
+   Sync.crearCuenta), así que crear treinta cuentas no echa al docente
+   de su propia sesión. */
+function cuentas(){
+  const m={}; ((window.Sync&&Sync.alumnos)||[]).forEach(a=> m[String(a.ced||a.id)]=a); return m;
+}
+let credenciales = [];
+
+function pintarAlta(){
+  const T=$("#dTablaAlta"); if(!T) return;
+  const db=planilla(), cu=cuentas();
+  if(!db.length){
+    T.innerHTML='<caption>Todavía no hay estudiantes en la planilla'+
+      '<small>Regístralos primero en <a href="#gbAlta">Seguimiento y notas</a>; aquí aparecerán para darles acceso.</small></caption>';
+    $("#dAltaRes").textContent="—"; return;
+  }
+  const con=db.filter(s=>cu[s.ced]).length;
+  $("#dAltaRes").textContent=con+" de "+db.length+" con acceso";
+  let h='<caption>Accesos · el usuario de cada estudiante es su cédula</caption><thead><tr>'+
+    '<th style="text-align:left">Estudiante</th><th>Usuario</th><th>Estado</th><th></th></tr></thead><tbody>';
+  db.slice().sort((a,b)=>a.nom.localeCompare(b.nom,"es")).forEach(s=>{
+    const c=cu[s.ced];
+    h+='<tr><td class="rh" style="text-align:left">'+esc(s.nom)+'</td>'+
+       '<td class="muted" style="font-family:var(--mono)">'+esc(s.ced)+'</td>'+
+       '<td>'+(c? '<span class="tag ok">Con acceso</span>' : '<span class="tag">Sin cuenta</span>')+'</td>'+
+       '<td><button class="btn sm dalta" data-ced="'+esc(s.ced)+'" data-nom="'+esc(s.nom)+'">'+
+       (c? 'Rehabilitar' : 'Crear acceso')+'</button></td></tr>';
+  });
+  T.innerHTML=h+'</tbody>';
+  $$(".dalta",T).forEach(b=> b.onclick=()=> altaUno(b.dataset.ced, b.dataset.nom, b));
+}
+
+function pintarCredenciales(){
+  const box=$("#dAltaSalida"); if(!box) return;
+  if(!credenciales.length){ box.innerHTML=""; return; }
+  box.innerHTML='<div class="credencial" id="dCredTxt">'+
+    credenciales.map(c=> esc(c.nom)+"  ·  usuario: "+esc(c.ced)+"  ·  contraseña: "+esc(c.ced)+
+      (c.yaExistia? "  (la cuenta ya existía; conserva su contraseña actual)":"")).join("\n")+
+    '</div><p class="muted" style="margin:8px 0 0;font-size:.8rem">Entrégales estos datos. '+
+    'Cada uno puede cambiar su contraseña desde la barra azul en cuanto entre.</p>';
+}
+
+async function altaUno(ced, nom, btn){
+  if(!window.Sync || Sync.estado()!=="on") return alert("Sin conexión con el servidor: no se pueden crear cuentas.");
+  if(!Sync.esDocente()) return alert("Inicia sesión como docente para crear accesos.");
+  ced=String(ced).replace(/\D/g,"");
+  if(ced.length<6) return alert("La contraseña inicial es la propia cédula, y Firebase exige mínimo 6 caracteres.\n\n"+
+    "La cédula "+ced+" es demasiado corta. Créale la cuenta a mano en la consola de Firebase, con el correo "+
+    ced+"@alumnos.estprob.local y la contraseña que prefieras.");
+  if(btn){ btn.disabled=true; btn.textContent="Creando…"; }
+  try{
+    const r = await Sync.crearCuenta(ced, nom, ced);
+    credenciales = credenciales.filter(c=>c.ced!==ced);
+    credenciales.push({ced, nom, yaExistia:r.yaExistia});
+    pintarCredenciales(); pintarAlta();
+    return true;
+  }catch(err){
+    if(btn){ btn.disabled=false; btn.textContent="Crear acceso"; }
+    alert("No se pudo crear el acceso de "+nom+":\n\n"+(err.message||err.code||err));
+    return false;
+  }
+}
+
+if($("#dAltaTodos")) $("#dAltaTodos").onclick = async ()=>{
+  const db=planilla(), cu=cuentas();
+  const faltan=db.filter(s=>!cu[s.ced]);
+  if(!faltan.length) return alert("Todos los estudiantes de la planilla ya tienen acceso.");
+  if(!confirm("Se van a crear "+faltan.length+" cuentas.\n\n"+
+              "Usuario y contraseña iniciales: la cédula de cada uno.\n¿Seguimos?")) return;
+  const b=$("#dAltaTodos"); b.disabled=true;
+  let ok=0;
+  for(let i=0;i<faltan.length;i++){
+    b.textContent="Creando "+(i+1)+" de "+faltan.length+"…";
+    if(await altaUno(faltan[i].ced, faltan[i].nom, null)) ok++;
+    await new Promise(r=>setTimeout(r,320));   /* sin atropellar a Firebase */
+  }
+  b.disabled=false; b.innerHTML="&#43; Crear los accesos que faltan";
+  alert(ok+" de "+faltan.length+" cuentas creadas.");
+};
+
+if($("#dAltaCopiar")) $("#dAltaCopiar").onclick = ()=>{
+  const db=planilla(), cu=cuentas();
+  const filas=db.filter(s=>cu[s.ced]).sort((a,b)=>a.nom.localeCompare(b.nom,"es"))
+    .map(s=> s.nom+"\t"+s.ced+"\t"+s.ced);
+  if(!filas.length) return alert("Todavía no hay cuentas creadas.");
+  const txt=["Estudiante\tUsuario\tContraseña inicial"].concat(filas).join("\n");
+  const fin=()=>alert(filas.length+" credenciales copiadas. Pégalas en Excel o en un documento para repartirlas.");
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(fin,()=>caer(txt));
+  else caer(txt);
+  function caer(t){
+    const a=document.createElement("textarea"); a.value=t; document.body.appendChild(a);
+    a.select(); try{ document.execCommand("copy"); fin(); }catch(e){ alert("No se pudo copiar."); }
+    a.remove();
+  }
+};
+
+/* ---------- 9 · ACTIVIDAD EN LA APP ---------- */
+const MODS_ACT = ["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m12"];
+const MOD_CORTO= {m1:"M1",m2:"M2",m3:"M3",m4:"M4",m5:"M5",m6:"ZE",m7:"Lab",m8:"Pbl",m9:"Aud",m10:"Ide",m12:"Tal"};
+const MOD_LARGO= {m1:"El módulo oficial",m2:"Taller 1 resuelto",m3:"Teoría del Taller 1",
+                  m4:"Teoría del Taller 2",m5:"Taller 2",m6:"Zona de estudio",m7:"Laboratorio",
+                  m8:"Banco de problemas",m9:"Auditoría",m10:"Ideas",m12:"Talleres interactivos"};
+const TOTAL_EJ = 18;
+const POR_DEFECTO = ["m1","m3","m4","m6","m7","m8","m9"];
+
+function modsContados(){
+  const v=LS.get("seg_mods", null);
+  return (Array.isArray(v) && v.length)? v.filter(x=>MODS_ACT.indexOf(x)>=0) : POR_DEFECTO.slice();
+}
+function guardarMods(v){ LS.set("seg_mods", v); }
+function num(id, def){ const n=$("#"+id); const v=n? parseFloat(n.value) : NaN; return isFinite(v)? v : def; }
+function exigencia(){ const n=$("#dExigencia"); return n? (parseFloat(n.value)||1) : 1; }
+
+/* Misma regla de «módulo leído» que ve el estudiante. */
+function completo(m){
+  return window.Lectura ? Lectura.completo(m, exigencia()) : false;
+}
+function mapaProgreso(){
+  const m={}; ((window.Sync&&Sync.progreso)||[]).forEach(p=> m[String(p.ced||p.id)]=p); return m;
+}
+
+function actividadDe(pr){
+  const mods=modsContados();
+  const md=(pr&&pr.mod)||{}, ej=(pr&&pr.ej)||{};
+  const fin=mods.filter(id=> completo(md[id])).length;
+  const abiertos=MODS_ACT.filter(id=> md[id] && (md[id].v||0)>0).length;
+  const ok=Object.keys(ej).filter(k=> ej[k] && ej[k].ok).length;
+  const intentados=Object.keys(ej).filter(k=> ej[k] && (ej[k].i||0)>0).length;
+  const seg=MODS_ACT.reduce((s,id)=> s + ((md[id]&&md[id].s)||0), 0);
+  const fm = mods.length? fin/mods.length : 0;
+  const fe = Math.min(1, ok/TOTAL_EJ);
+  const pm=num("dPesoMod",60), pe=num("dPesoEj",40), tt=(pm+pe)||1;
+  const frac=(pm*fm + pe*fe)/tt;
+  return {fin, total:mods.length, abiertos, ok, intentados, seg, frac, nota:1+4*frac,
+          ultima: Math.max.apply(null,[0].concat(MODS_ACT.map(id=>(md[id]&&md[id].u)||0)))};
+}
+
+function notaAsistenciaDe(ced){
+  const A=asis(); let p=0,t=0;
+  SESIONES.forEach(x=>{ const c=A[x[0]];
+    if(c && c[ced]){ t++; if(c[ced]==="p") p+=1; else if(c[ced]==="t") p+=0.5; } });
+  return t? {nota:1+4*(p/t), sesiones:t} : null;
+}
+
+function pintarSegMods(){
+  const box=$("#dSegMods"); if(!box) return;
+  const sel=modsContados();
+  box.innerHTML=MODS_ACT.map(id=>
+    '<button class="pill'+(sel.indexOf(id)>=0?" on":"")+'" data-m="'+id+'">'+esc(MOD_LARGO[id])+'</button>').join("");
+  $$(".pill",box).forEach(b=> b.onclick=()=>{
+    let v=modsContados();
+    v = v.indexOf(b.dataset.m)>=0 ? v.filter(x=>x!==b.dataset.m) : v.concat([b.dataset.m]);
+    guardarMods(v); pintarSegMods(); pintarActividad();
+  });
+}
+
+function relojito(s){
+  s=Math.round(s||0);
+  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60);
+  return h? h+"h "+m+"m" : (m? m+" min" : s+" s");
+}
+
+function filasActividad(){
+  const db=planilla(), pr=mapaProgreso(), cu=cuentas();
+  const vistos={};
+  const filas=db.map(s=>{ vistos[s.ced]=1;
+    return {ced:s.ced, nom:s.nom, pr:pr[s.ced]||null, cuenta:!!cu[s.ced], enPlanilla:true}; });
+  /* quien tenga progreso pero no esté en la planilla también se ve:
+     así el docente detecta a quien entró y no ha matriculado */
+  Object.keys(pr).forEach(ced=>{ if(!vistos[ced])
+    filas.push({ced, nom:(pr[ced].nom||"(fuera de la planilla)"), pr:pr[ced], cuenta:!!cu[ced], enPlanilla:false}); });
+  return filas.sort((a,b)=> a.nom.localeCompare(b.nom,"es"));
+}
+
+function pintarActividad(){
+  const T=$("#dTablaAct"); if(!T) return;
+  const q=(($("#dActBuscar")||{value:""}).value||"").toLowerCase().trim();
+  let filas=filasActividad();
+  if(q) filas=filas.filter(f=> f.nom.toLowerCase().includes(q) || String(f.ced).includes(q));
+
+  const conDatos=filas.filter(f=>f.pr);
+  $("#dActVacio").style.display = conDatos.length? "none":"block";
+
+  const mods=modsContados();
+  const acts=conDatos.map(f=>actividadDe(f.pr));
+  const promMod = acts.length? acts.reduce((s,a)=>s+a.fin,0)/acts.length : 0;
+  const promEj  = acts.length? acts.reduce((s,a)=>s+a.ok ,0)/acts.length : 0;
+  const promNota= acts.length? acts.reduce((s,a)=>s+a.nota,0)/acts.length : 0;
+  $("#dActStats").innerHTML=
+    '<div class="stat"><div class="lb">Han entrado</div><div class="vl">'+conDatos.length+'</div>'+
+      '<div class="sub">de '+filas.length+' en la lista</div></div>'+
+    '<div class="stat g"><div class="lb">Módulos leídos</div><div class="vl">'+f2(promMod)+'</div>'+
+      '<div class="sub">promedio, de '+mods.length+' exigidos</div></div>'+
+    '<div class="stat g"><div class="lb">Ejercicios</div><div class="vl">'+f2(promEj)+'</div>'+
+      '<div class="sub">promedio, de '+TOTAL_EJ+'</div></div>'+
+    '<div class="stat t"><div class="lb">Nota de actividad</div><div class="vl">'+
+      (acts.length? f2(promNota):"—")+'</div><div class="sub">promedio del grupo</div></div>';
+
+  let h='<caption>Actividad · se actualiza en vivo'+
+    '<small>Cada casilla es un módulo: <b>✓</b> leído completo · <b>%</b> lo que lleva recorrido · '+
+    '<b>—</b> sin abrir. Los módulos en negrita son los que cuentan para la nota.</small></caption>'+
+    '<thead><tr><th style="text-align:left">Estudiante</th><th>Cédula</th>'+
+    MODS_ACT.map(id=>'<th title="'+esc(MOD_LARGO[id])+'">'+
+      (mods.indexOf(id)>=0? '<b>'+MOD_CORTO[id]+'</b>' : MOD_CORTO[id])+'</th>').join("")+
+    '<th>Leídos</th><th>Ejerc.</th><th>Tiempo</th><th>Actividad</th><th>Último acceso</th></tr></thead><tbody>';
+
+  filas.forEach(f=>{
+    const a=f.pr? actividadDe(f.pr) : null;
+    const md=(f.pr&&f.pr.mod)||{};
+    h+='<tr'+(f.cuenta?'':' class="sincuenta"')+'>'+
+       '<td class="nom" title="'+esc(f.nom)+'"><span class="n">'+esc(f.nom)+'</span>'+
+         (f.cuenta? '' : ' <span class="tag">sin cuenta</span>')+
+         (f.enPlanilla? '' : ' <span class="tag no">fuera de la planilla</span>')+'</td>'+
+       '<td class="muted">'+esc(f.ced)+'</td>';
+    MODS_ACT.forEach(id=>{
+      const m=md[id];
+      let cls="no", txt="—";
+      if(m && (m.v||0)>0){
+        if(completo(m)){ cls="ok"; txt="✓"; }
+        else { cls="par"; txt=(m.p||0)+"%"; }
+      }
+      h+='<td><span class="cel '+cls+'" title="'+esc(MOD_LARGO[id])+
+         (m? ' · '+(m.v||0)+' visitas · '+relojito(m.s)+' · '+(m.p||0)+' % recorrido' : ' · sin abrir')+
+         '">'+txt+'</span></td>';
+    });
+    h+= a
+      ? '<td class="'+(a.fin>=a.total?"mk":"")+'"><b>'+a.fin+'/'+a.total+'</b></td>'+
+        '<td class="'+(a.ok>=TOTAL_EJ?"mk":"")+'">'+a.ok+'/'+TOTAL_EJ+'</td>'+
+        '<td class="muted">'+relojito(a.seg)+'</td>'+
+        '<td class="'+(a.nota>=3?"mk":"mk3")+'"><b>'+f2(a.nota)+'</b></td>'+
+        '<td class="muted">'+(a.ultima? new Date(a.ultima).toLocaleDateString("es-CO",{day:"2-digit",month:"short"}):"—")+'</td>'
+      : '<td colspan="5" class="muted">No ha entrado todavía</td>';
+    h+='</tr>';
+  });
+  T.innerHTML=h+'</tbody>';
+
+  const pa=num("dPesoAsis",50), pp=num("dPesoApp",50), tt=(pa+pp)||1;
+  const pm=num("dPesoMod",60), pe=num("dPesoEj",40), ts=(pm+pe)||1;
+  $("#dPesoNota").innerHTML=
+    'Seguimiento y asistencia = <b>'+Math.round(pa/tt*100)+' %</b> asistencia presencial + '+
+    '<b>'+Math.round(pp/tt*100)+' %</b> actividad en la app. '+
+    'Y dentro de la app: <b>'+Math.round(pm/ts*100)+' %</b> módulos leídos ('+mods.length+
+    ' exigidos) + <b>'+Math.round(pe/ts*100)+' %</b> ejercicios (de '+TOTAL_EJ+').';
+}
+
+["dPesoAsis","dPesoApp","dPesoMod","dPesoEj","dExigencia","dActBuscar"].forEach(id=>{
+  const n=$("#"+id); if(n) n.addEventListener("input", pintarActividad);
+  if(n) n.addEventListener("change", pintarActividad);
+});
+
+if($("#dActExp")) $("#dActExp").onclick=()=>{
+  const filas=filasActividad();
+  if(!filas.length) return alert("No hay estudiantes.");
+  const head=["Estudiante","Cédula","Tiene cuenta"]
+    .concat(MODS_ACT.map(id=>MOD_LARGO[id]+" · %"))
+    .concat(MODS_ACT.map(id=>MOD_LARGO[id]+" · min"))
+    .concat(["Módulos leídos","Exigidos","Ejercicios resueltos","Ejercicios intentados",
+             "Minutos totales","Nota de actividad","Último acceso"]);
+  const rows=filas.map(f=>{
+    const md=(f.pr&&f.pr.mod)||{}, a=f.pr? actividadDe(f.pr) : null;
+    return [f.nom, f.ced, f.cuenta?"sí":"no"]
+      .concat(MODS_ACT.map(id=> (md[id]&&md[id].p)||0))
+      .concat(MODS_ACT.map(id=> Math.round(((md[id]&&md[id].s)||0)/60)))
+      .concat(a? [a.fin, a.total, a.ok, a.intentados, Math.round(a.seg/60), f2(a.nota),
+                  a.ultima? new Date(a.ultima).toLocaleString("es-CO"):""]
+                : ["","","","","","",""]);
+  });
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const csv=[head.map(q).join(";")].concat(rows.map(r=>r.map(q).join(";"))).join("\r\n");
+  const u=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a"); a.href=u; a.download="Actividad_en_la_app.csv"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),1500);
+};
+
+if($("#dSegNota")) $("#dSegNota").onclick=()=>{
+  const db=planilla();
+  if(!db.length) return alert("No hay estudiantes en la planilla.");
+  const pr=mapaProgreso();
+  const pa=num("dPesoAsis",50), pp=num("dPesoApp",50), tt=(pa+pp)||1;
+  let tocados=0, sinApp=0, sinAsis=0;
+  db.forEach(st=>{
+    const asi=notaAsistenciaDe(st.ced);
+    const d=pr[st.ced];
+    if(!d) sinApp++;
+    if(!asi) sinAsis++;
+    const nApp = d? actividadDe(d).nota : 1;
+    const nota = asi ? (pa*asi.nota + pp*nApp)/tt : nApp;
+    st.n[2]=Math.round(nota*100)/100;
+    tocados++;
+  });
+  guardarPlanilla(db);
+  if(window.gbRender) window.gbRender();
+  dibujarEvolucion();
+  $("#dSegMsg").innerHTML='<span style="color:var(--verde)">&#10003; '+tocados+
+    ' estudiante(s) calificados en la evaluación 3.</span>'+
+    (sinApp? ' <b>'+sinApp+'</b> no ha(n) entrado nunca a la app: cuentan 1,0 en esa mitad.':'')+
+    (sinAsis? ' <b>'+sinAsis+'</b> no tiene(n) asistencia marcada: se les puso solo la nota de la app.':'')+
+    ' Revísalo en <a href="#gbPlanilla">Seguimiento y notas</a>.';
+};
+
+function refrescarPanel(){ pintarAlta(); pintarSegMods(); pintarActividad(); }
+window.Panel = { refrescar: refrescarPanel, pintarAlta, pintarActividad };
+
 window.Docente={ refrescarTalleres, refrescarEntregas, pintarAsistencia, dibujarEvolucion, publicarRoster };
 pintarSesiones(); refrescarTalleres(); refrescarEntregas(); pintarAsistencia(); dibujarEvolucion();
+refrescarPanel();
 setTimeout(publicarRoster, 3000);
 })();
 </script>
@@ -6660,9 +7310,10 @@ const $=(s,c)=>(c||document).querySelector(s), $$=(s,c)=>Array.from((c||document
 const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
   .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
-const ROL = { admin:"Administrador", docente:"Docente", invitado:"Sin permisos", estudiante:"Estudiante" };
+const ROL = { admin:"Administrador", docente:"Docente", alumno:"Estudiante",
+              invitado:"Sin permisos", sinficha:"Sin matrícula", fuera:"Sin sesión" };
 
-function perfil(){ return (window.Sync && Sync.perfil) ? Sync.perfil() : "estudiante"; }
+function perfil(){ return (window.Sync && Sync.perfil) ? Sync.perfil() : "fuera"; }
 function esDocente(){ return !!(window.Sync && Sync.esDocente && Sync.esDocente()); }
 function hayNube(){ return !!(window.Sync && Sync.estado && Sync.estado()==="on"); }
 
@@ -6684,76 +7335,61 @@ function pintarGate(n){
     gate.innerHTML =
       '<div class="authbar noprint">'+
         '<span class="rol'+(p==="admin"?" adm":"")+'">'+(ROL[p]||"Docente")+'</span>'+
-        '<span class="em">'+(u? esc(u.email) : "Modo local, sin conexión")+'</span>'+
-        (u? '<button class="btn sm" data-salir="'+n+'">Cerrar sesión</button>'
+        '<span class="em">'+(u? esc(u.email) : "Modo local, sin conexi\u00f3n")+'</span>'+
+        (u? '<button class="btn sm" data-salir="'+n+'">Cerrar sesi\u00f3n</button>'
           : '<button class="btn sm" data-salirlocal="'+n+'">Bloquear</button>')+
       '</div>';
     const b1=$("[data-salir]",gate), b2=$("[data-salirlocal]",gate);
-    if(b1) b1.onclick=async()=>{ await Sync.salir(); refrescar(); };
+    if(b1) b1.onclick=async()=>{ try{ await Sync.salir(); }catch(e){} location.reload(); };
     if(b2) b2.onclick=()=>{ abiertoLocal=false;
       try{ sessionStorage.removeItem("estprob_docente_local"); }catch(e){} refrescar(); };
     return;
   }
 
+  /* Al aula ya se entra con sesi\u00f3n, as\u00ed que aqu\u00ed no hace falta otro
+     formulario: o quien mira es el docente, o tiene que cambiar de
+     cuenta. El \u00fanico caso con formulario es el archivo sin conexi\u00f3n. */
   body.style.display="none";
-  const conNube = hayNube();
+  const u=(window.Sync&&Sync.usuario&&Sync.usuario())||null;
+  const conNube=hayNube();
   gate.innerHTML =
     '<div class="authgate noprint">'+
       '<div class="ic">&#128272;</div>'+
-      '<h4>Área del docente</h4>'+
-      '<p>'+(conNube
-        ? 'Inicia sesión con tu cuenta para ver las notas del grupo y administrar los talleres.'
-        : 'Sin conexión con el servidor. Escribe la clave local para trabajar con la planilla de este equipo.')+'</p>'+
+      '<h4>\u00c1rea del docente</h4>'+
+      '<p>'+(u
+        ? 'Entraste como <b>'+esc(u.email)+'</b>. Esta parte del aula guarda las notas y las entregas '+
+          'de todo el grupo, y solo la abre la cuenta del docente.'
+        : conNube
+          ? 'Esta parte del aula es solo para el docente. Entra con la cuenta del curso.'
+          : 'Sin conexi\u00f3n con el servidor. Escribe la clave local para trabajar con la planilla de este equipo.')+
+      '</p>'+
       (conNube
-        ? '<div class="field"><label class="fl" for="auEmail">Correo</label>'+
-          '<input type="email" id="auEmail" autocomplete="username" placeholder="tucorreo@ejemplo.com"></div>'+
-          '<div class="field"><label class="fl" for="auPass">Contraseña</label>'+
-          '<input type="password" id="auPass" autocomplete="current-password" placeholder="Tu contraseña"></div>'
-        : '<div class="field"><label class="fl" for="auPass">Clave local</label>'+
-          '<input type="password" id="auPass" placeholder="Clave del equipo"></div>')+
-      '<button class="btn primary" id="auGo" style="width:100%;justify-content:center">Entrar</button>'+
-      '<div class="msg" id="auMsg"></div>'+
+        ? '<button class="btn primary" id="auOtra'+n+'" style="width:100%;justify-content:center">'+
+          (u? 'Entrar con la cuenta del docente' : 'Iniciar sesi\u00f3n')+'</button>'
+        : '<div class="field"><label class="fl" for="auPass'+n+'">Clave local</label>'+
+          '<input type="password" id="auPass'+n+'" placeholder="Clave del equipo"></div>'+
+          '<button class="btn primary" id="auGo'+n+'" style="width:100%;justify-content:center">Entrar</button>')+
+      '<div class="msg" id="auMsg'+n+'"></div>'+
       (conNube? '' : '<p class="lockfoot" style="margin-top:14px">La clave local solo abre la planilla de '+
-        'este computador. Las notas del grupo requieren conexión.</p>')+
+        'este computador. Las notas del grupo requieren conexi\u00f3n.</p>')+
     '</div>';
 
-  const go=$("#auGo",gate), msg=$("#auMsg",gate);
-  const pass=$("#auPass",gate), email=$("#auEmail",gate);
-  const decir=(t,c)=>{ msg.className="msg "+(c||""); msg.innerHTML=t; };
-
-  go.onclick=async ()=>{
-    if(!conNube){
+  const otra=$("#auOtra"+n,gate);
+  if(otra) otra.onclick=async()=>{
+    try{ if(window.Sync && Sync.salir) await Sync.salir(); }catch(e){}
+    location.reload();
+  };
+  const go=$("#auGo"+n,gate), msg=$("#auMsg"+n,gate), pass=$("#auPass"+n,gate);
+  if(go){
+    go.onclick=()=>{
       if(pass.value===CLAVE_LOCAL){
         abiertoLocal=true;
         try{ sessionStorage.setItem("estprob_docente_local","1"); }catch(e){}
         refrescar();
-      } else decir("Clave incorrecta.","err");
-      return;
-    }
-    const e=(email.value||"").trim(), p=pass.value;
-    if(!e||!p) return decir("Escribe el correo y la contraseña.","err");
-    decir("Entrando&hellip;","");
-    go.disabled=true;
-    try{
-      const rol=await Sync.entrar(e,p);
-      if(rol==="invitado"){
-        decir("Esa cuenta existe pero no tiene permisos de docente.","err");
-        await Sync.salir();
-      } else decir("&#10003; Bienvenido.","ok");
-      go.disabled=false;
-      setTimeout(refrescar,300);
-    }catch(err){
-      go.disabled=false;
-      const m=String(err.code||err.message||"");
-      decir(
-        /invalid-credential|wrong-password|user-not-found|invalid-login/.test(m) ? "Correo o contraseña incorrectos." :
-        /too-many-requests/.test(m) ? "Demasiados intentos. Espera unos minutos." :
-        /network/.test(m) ? "Sin conexión con el servidor." :
-        /operation-not-allowed/.test(m) ? "Falta activar el acceso por correo y contraseña en Firebase." :
-        "No se pudo entrar: "+m, "err");
-    }
-  };
-  [pass,email].forEach(i=>{ if(i) i.addEventListener("keydown",ev=>{ if(ev.key==="Enter") go.click(); }); });
+      } else { msg.className="msg err"; msg.innerHTML="Clave incorrecta."; }
+    };
+    pass.addEventListener("keydown",ev=>{ if(ev.key==="Enter") go.click(); });
+  }
 }
 
 /* ---------- ocultar los módulos del docente a los estudiantes ---------- */
@@ -6774,6 +7410,7 @@ function aplicarVisibilidad(){
 function refrescar(){
   pintarGate(11); pintarGate(13); aplicarVisibilidad();
   if(window.Docente){ Docente.refrescarEntregas(); Docente.refrescarTalleres(); }
+  if(window.Panel) Panel.refrescar();
 }
 document.addEventListener("sesion-cambio", refrescar);
 window.Auth = { refrescar, acceso, esDocente, perfil };
@@ -6782,38 +7419,611 @@ setTimeout(refrescar, 1200);
 setTimeout(refrescar, 4000);
 })();
 </script>
+<script id="accesoJS">
+/* ==================================================================
+   ACCESO POR CÉDULA Y SEGUIMIENTO DE LA LECTURA
+   · La puerta cubre la aplicación hasta que alguien inicia sesión.
+   · El motor de progreso mide, módulo a módulo, cuántas veces entró
+     el estudiante, cuánto tiempo estuvo con la pestaña delante y
+     hasta dónde llegó leyendo; y anota qué ejercicios resolvió.
+   · Todo se guarda primero en este navegador y sube a Firestore en
+     tandas. Si se cae la red, no se pierde nada: sube después.
+   ================================================================== */
+(function(){
+"use strict";
+const $=(s,c)=>(c||document).querySelector(s), $$=(s,c)=>Array.from((c||document).querySelectorAll(s));
+const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+const MEM={}; let LS_OK=true;
+try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); }catch(e){ LS_OK=false; }
+const LS={
+  get(k,d){ if(!LS_OK) return (k in MEM)? MEM[k] : d;
+    try{ const v=localStorage.getItem("estprob_"+k); return v==null?d:JSON.parse(v); }
+    catch(e){ return (k in MEM)?MEM[k]:d; } },
+  set(k,v){ MEM[k]=v; if(!LS_OK) return;
+    try{ localStorage.setItem("estprob_"+k, JSON.stringify(v)); }catch(e){ LS_OK=false; } }
+};
+
+/* Los módulos del estudiante. m11 y m13 son del docente y no se miden. */
+const MODULOS = ["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m12"];
+const NOMBRE_MOD = {
+  m1:"El módulo oficial", m2:"Taller 1 resuelto", m3:"Teoría del Taller 1",
+  m4:"Teoría del Taller 2", m5:"Taller 2", m6:"Zona de estudio",
+  m7:"Laboratorio", m8:"Banco de problemas", m9:"Auditoría",
+  m10:"Ideas", m12:"Talleres interactivos"
+};
+const UMBRAL_PCT = window.Lectura.UMBRAL_PCT;   /* hay que recorrer el 90 % del módulo */
+
+function hayNube(){ return !!(window.Sync && Sync.estado && Sync.estado()==="on"); }
+function arrancado(){ return !!(window.Sync && Sync.arrancado && Sync.arrancado()); }
+function perfil(){ return (window.Sync && Sync.perfil) ? Sync.perfil() : "fuera"; }
+function esAlumno(){ return perfil()==="alumno"; }
+
+/* La regla de «módulo terminado» vive en window.Lectura, una sola vez,
+   para que el estudiante y el panel del docente cuenten igual. */
+const tiempoExigido  = (pal,ex)=> window.Lectura.tiempoExigido(pal,ex);
+const moduloCompleto = (m,ex)=>  window.Lectura.completo(m,ex);
+
+/* ==================================================================
+   1 · LA PUERTA
+   ================================================================== */
+const puerta = $("#puerta");
+let pestana = "alumno";
+let sinRed = false;
+try{ sinRed = sessionStorage.getItem("estprob_sinred")==="1"; }catch(e){}
+
+function dentro(){
+  const p = perfil();
+  return p==="admin" || p==="docente" || p==="alumno" || sinRed;
+}
+
+function abrirApp(){
+  if(puerta) puerta.hidden = true;
+  document.body.classList.remove("cerrado");
+}
+function cerrarApp(){
+  if(puerta) puerta.hidden = false;
+  document.body.classList.add("cerrado");
+}
+
+const CABECERA =
+  '<div class="marca">'+
+    '<span class="kick">Corporación Universitaria Remington</span>'+
+    '<h1>Estadística <em>Probabilística</em></h1>'+
+  '</div>';
+
+function pintarPuerta(){
+  if(!puerta) return;
+  const caja = $("#puertaCaja"); if(!caja) return;
+
+  if(dentro()){ abrirApp(); return; }
+  cerrarApp();
+
+  /* todavía negociando con Firebase */
+  if(!arrancado()){
+    caja.innerHTML = CABECERA + '<div class="cargando">Conectando con el aula&hellip;</div>';
+    return;
+  }
+
+  const p = perfil();
+
+  /* la cuenta existe pero no está matriculada en el curso */
+  if(p==="sinficha" || p==="invitado"){
+    caja.innerHTML = CABECERA +
+      '<div class="msg err" style="text-align:center;margin-bottom:16px">'+
+        (p==="sinficha"
+          ? 'Tu cuenta existe, pero <b>todavía no estás matriculado</b> en el curso.<br>'+
+            'Avisa al docente para que te habilite el acceso.'
+          : 'Esa cuenta no tiene acceso a esta aula.')+
+      '</div>'+
+      '<button class="btn" id="pSalir" style="width:100%;justify-content:center">Entrar con otra cuenta</button>';
+    $("#pSalir").onclick = async ()=>{ try{ await Sync.salir(); }catch(e){} pintarPuerta(); };
+    return;
+  }
+
+  /* sin servidor: la aplicación sigue sirviendo como material de estudio */
+  if(!hayNube()){
+    caja.innerHTML = CABECERA +
+      '<div class="msg err" style="text-align:center;margin-bottom:16px">'+
+        'No hay conexión con el servidor del curso.</div>'+
+      '<p class="pie" style="border:0;padding:0;margin:0 0 16px">Puedes entrar igual y estudiar el material. '+
+      'Lo que leas y los ejercicios que resuelvas <b>se guardan en este equipo</b> y se envían al docente '+
+      'en cuanto vuelva la conexión y entres con tu cédula.</p>'+
+      '<button class="btn primary" id="pLocal" style="width:100%;justify-content:center">Entrar sin conexión</button>'+
+      '<div class="pie">¿Vuelve la señal? <button class="enlace" id="pReintentar">Reintentar la conexión</button></div>';
+    $("#pLocal").onclick = ()=>{
+      sinRed = true;
+      try{ sessionStorage.setItem("estprob_sinred","1"); }catch(e){}
+      pintarPuerta(); avisarCambio();
+    };
+    $("#pReintentar").onclick = ()=> location.reload();
+    return;
+  }
+
+  /* formulario normal */
+  const alumno = pestana==="alumno";
+  caja.innerHTML = CABECERA +
+    '<div class="quien">'+
+      '<button data-t="alumno"'+(alumno?' class="on"':'')+'>Estudiante</button>'+
+      '<button data-t="docente"'+(!alumno?' class="on"':'')+'>Docente</button>'+
+    '</div>'+
+    (alumno
+      ? '<div class="field"><label class="fl" for="pUsu">Usuario</label>'+
+        '<input type="text" id="pUsu" inputmode="numeric" autocomplete="username" placeholder="Tu número de cédula"></div>'
+      : '<div class="field"><label class="fl" for="pUsu">Correo</label>'+
+        '<input type="email" id="pUsu" autocomplete="username" placeholder="tucorreo@ejemplo.com"></div>')+
+    '<div class="field"><label class="fl" for="pCla">Contraseña</label>'+
+    '<input type="password" id="pCla" autocomplete="current-password" placeholder="'+
+      (alumno?'Al principio, tu misma cédula':'Tu contraseña')+'"></div>'+
+    '<button class="btn primary" id="pGo">Entrar</button>'+
+    '<div class="msg" id="pMsg"></div>'+
+    (alumno
+      ? '<div class="pie"><b>Tu usuario es tu cédula.</b> La primera vez, la contraseña es también tu cédula; '+
+        'una vez dentro puedes cambiarla. Si no te deja entrar, pídele al docente que te cree el acceso.</div>'
+      : '<div class="pie">Área reservada al docente y al administrador del curso.</div>');
+
+  $$(".quien button", caja).forEach(b=> b.onclick=()=>{ pestana=b.dataset.t; pintarPuerta(); });
+
+  const go=$("#pGo",caja), msg=$("#pMsg",caja), usu=$("#pUsu",caja), cla=$("#pCla",caja);
+  const decir=(t,c)=>{ msg.className="msg "+(c||""); msg.innerHTML=t; };
+
+  go.onclick = async ()=>{
+    const u=(usu.value||"").trim(), c=cla.value;
+    if(!u || !c) return decir(alumno? "Escribe tu cédula y tu contraseña." : "Escribe el correo y la contraseña.","err");
+    if(alumno && u.replace(/\D/g,"").length<5) return decir("Esa cédula no parece completa.","err");
+    decir("Entrando&hellip;","");
+    go.disabled=true;
+    try{
+      const rol = alumno ? await Sync.entrarAlumno(u, c) : await Sync.entrar(u, c);
+      go.disabled=false;
+      if(rol==="alumno" || rol==="docente" || rol==="admin"){
+        decir("&#10003; Bienvenido.","ok");
+        setTimeout(pintarPuerta, 250);
+      } else {
+        pintarPuerta();   /* sinficha / invitado: la propia puerta lo explica */
+      }
+    }catch(err){
+      go.disabled=false;
+      const m=String(err.code||err.message||"");
+      decir(
+        /invalid-credential|wrong-password|user-not-found|invalid-login/.test(m)
+          ? (alumno? "Cédula o contraseña incorrectas. Si es tu primera vez, la contraseña es tu cédula."
+                   : "Correo o contraseña incorrectos.") :
+        /too-many-requests/.test(m) ? "Demasiados intentos seguidos. Espera unos minutos." :
+        /network/.test(m)           ? "Sin conexión con el servidor." :
+        /operation-not-allowed/.test(m) ? "Falta activar el acceso por correo y contraseña en Firebase." :
+        "No se pudo entrar: "+m, "err");
+    }
+  };
+  [usu,cla].forEach(i=> i && i.addEventListener("keydown", e=>{ if(e.key==="Enter") go.click(); }));
+  setTimeout(()=>{ try{ usu.focus(); }catch(e){} }, 60);
+}
+
+/* Si el módulo de Firebase nunca llega a arrancar (bloqueo de red, CDN
+   caída, JavaScript de terceros), a los 12 segundos ofrecemos la salida
+   sin conexión en vez de dejar a nadie mirando un «Conectando…» eterno. */
+setTimeout(()=>{ if(!arrancado() && !dentro()){ pintarPuerta(); } }, 12000);
+setTimeout(()=>{
+  if(!arrancado() && !dentro()){
+    const caja=$("#puertaCaja");
+    if(caja) caja.innerHTML = CABECERA +
+      '<div class="msg err" style="text-align:center;margin-bottom:16px">'+
+        'El servidor del curso no responde.</div>'+
+      '<button class="btn primary" id="pLocal2" style="width:100%;justify-content:center">Entrar sin conexión</button>';
+    const b=$("#pLocal2");
+    if(b) b.onclick=()=>{ sinRed=true; try{ sessionStorage.setItem("estprob_sinred","1"); }catch(e){}
+      pintarPuerta(); avisarCambio(); };
+  }
+}, 12100);
+
+/* ==================================================================
+   2 · MOTOR DE PROGRESO
+   Estructura de lo que se guarda, por estudiante:
+     mod: { m3:{ v:visitas, s:segundos, p:%máximo, w:palabras,
+                 a:primera vez, u:última vez } }
+     ej:  { p7:{ i:intentos, ok:true, t:cuándo } }
+   ================================================================== */
+const VACIO = ()=> ({mod:{}, ej:{}, lab:{}, clave:{}, entro:0});
+let D = VACIO();          /* datos del estudiante en sesión */
+let cedActual = "";
+let nomActual = "";
+let sucio = false;
+let cargado = false;
+
+function claveLS(ced){ return "progreso_"+(ced||"local"); }
+
+/* Une dos progresos quedándose siempre con lo mejor de cada uno: así
+   da igual que el estudiante trabaje en el celular y luego en un
+   computador, o que estuviera sin red un rato. */
+function fundir(a, b){
+  const r = VACIO();
+  a = a || VACIO(); b = b || VACIO();
+  const alto=(x,y)=> Math.max(Number(x)||0, Number(y)||0);
+  Object.keys(Object.assign({}, a.mod, b.mod)).forEach(k=>{
+    const x=a.mod[k]||{}, y=b.mod[k]||{};
+    r.mod[k] = { v:alto(x.v,y.v), s:alto(x.s,y.s), p:Math.min(100,alto(x.p,y.p)),
+                 w:alto(x.w,y.w),
+                 a:(x.a&&y.a)? Math.min(x.a,y.a) : (x.a||y.a||0),
+                 u:alto(x.u,y.u) };
+  });
+  Object.keys(Object.assign({}, a.ej, b.ej)).forEach(k=>{
+    const x=a.ej[k]||{}, y=b.ej[k]||{};
+    r.ej[k] = { i:alto(x.i,y.i), ok:!!(x.ok||y.ok), t:alto(x.t,y.t) };
+  });
+  r.lab   = Object.assign({}, a.lab, b.lab);
+  r.clave = Object.assign({}, a.clave, b.clave);
+  r.entro = alto(a.entro, b.entro);
+  return r;
+}
+
+async function cargarProgreso(ced, nom){
+  cedActual = ced || "";
+  nomActual = nom || "";
+  D = LS.get(claveLS(cedActual), VACIO());
+  cargado = true;
+  /* Lo estudiado antes de identificarse (modo sin conexión) no se tira:
+     se suma a lo suyo la primera vez que entra con su cédula. */
+  if(ced){
+    const suelto = LS.get(claveLS(""), null);
+    if(suelto && (Object.keys(suelto.mod||{}).length || Object.keys(suelto.ej||{}).length)){
+      D = fundir(D, suelto);
+      LS.set(claveLS(""), VACIO());
+    }
+  }
+  if(ced && hayNube()){
+    try{
+      const nube = await Sync.leerProgreso(ced);
+      if(nube) D = fundir(D, nube);
+    }catch(e){ /* seguimos con lo local */ }
+  }
+  if(!D.entro) D.entro = Date.now();
+  /* si ya había un módulo abierto antes de cargar, su visita cuenta */
+  if(modAbierto){ const m=reg(modAbierto); if(!m.v){ m.v=1; m.a=Date.now(); m.u=Date.now(); } }
+  guardarLocal();
+  sucio = true;
+  medirScroll();
+  pintarMiProgreso();
+}
+
+function guardarLocal(){ LS.set(claveLS(cedActual), D); }
+
+async function subir(){
+  if(!sucio || !cedActual || !esAlumno() || !hayNube()) return;
+  sucio = false;
+  try{
+    await Sync.guardarProgreso({nom:nomActual, mod:D.mod, ej:D.ej, lab:D.lab,
+                                clave:D.clave, entro:D.entro});
+  }catch(e){ sucio = true; }   /* lo reintentamos en la siguiente tanda */
+}
+setInterval(subir, 20000);
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden){ guardarLocal(); subir(); } });
+window.addEventListener("pagehide", ()=>{ guardarLocal(); subir(); });
+
+/* ---------- palabras de cada módulo, para exigir un tiempo mínimo ---------- */
+const palabrasCache = {};
+function palabrasDe(id){
+  if(palabrasCache[id]!=null) return palabrasCache[id];
+  const v=document.getElementById(id);
+  if(!v){ return 0; }
+  let n=0;
+  try{
+    const c=v.cloneNode(true);
+    c.querySelectorAll("script,style,noscript,.modnav,.authgate,.authbar,.mibar,.miprog,.noprint")
+      .forEach(x=>x.remove());
+    n=(c.textContent||"").trim().split(/\s+/).filter(Boolean).length;
+  }catch(e){ n=0; }
+  /* los módulos que se dibujan solos pueden estar vacíos al principio:
+     no cacheamos un cero para poder volver a contarlos más tarde */
+  if(n>0) palabrasCache[id]=n;
+  return n;
+}
+
+/* ---------- medición ---------- */
+let modAbierto = null;
+function reg(id){
+  if(!D.mod[id]) D.mod[id] = {v:0, s:0, p:0, w:0, a:0, u:0};
+  return D.mod[id];
+}
+function pctVisible(id){
+  const v=document.getElementById(id);
+  if(!v) return 0;
+  const alto=v.offsetHeight;
+  if(alto<=0) return 0;
+  const r=v.getBoundingClientRect();
+  const recorrido=Math.min(alto, Math.max(0, window.innerHeight - r.top));
+  return Math.round(Math.min(100, recorrido/alto*100));
+}
+function medirScroll(){
+  if(!modAbierto || !cargado) return;
+  const m=reg(modAbierto), p=pctVisible(modAbierto);
+  if(p>(m.p||0)){ m.p=p; sucio=true; }
+  const w=palabrasDe(modAbierto);
+  if(w>(m.w||0)){ m.w=w; sucio=true; }
+}
+
+function entrarModulo(id){
+  if(modAbierto===id) return;
+  modAbierto = MODULOS.indexOf(id)>=0 ? id : null;
+  if(!modAbierto || !cargado) return;
+  const m=reg(modAbierto);
+  m.v=(m.v||0)+1;
+  if(!m.a) m.a=Date.now();
+  m.u=Date.now();
+  sucio=true;
+  setTimeout(medirScroll, 120);
+  setTimeout(medirScroll, 900);
+  pintarMiProgreso();
+}
+
+let latido=0;
+setInterval(()=>{
+  if(!modAbierto || !cargado || document.hidden) return;
+  const m=reg(modAbierto);
+  m.s=(m.s||0)+1; m.u=Date.now(); sucio=true;
+  medirScroll();
+  if(++latido % 5 === 0){ guardarLocal(); pintarMiProgreso(); }
+}, 1000);
+
+let scrollPend=false;
+window.addEventListener("scroll", ()=>{
+  if(scrollPend) return;
+  scrollPend=true;
+  requestAnimationFrame(()=>{ scrollPend=false; medirScroll(); });
+}, {passive:true});
+window.addEventListener("resize", medirScroll);
+
+/* ==================================================================
+   3 · BARRA DE SESIÓN Y TARJETA «MI PROGRESO»
+   ================================================================== */
+function resumen(exig){
+  const mods = MODULOS.map(id=>({
+    id, nom:NOMBRE_MOD[id]||id, d:D.mod[id]||null,
+    fin: moduloCompleto(D.mod[id], exig)
+  }));
+  const hechos = mods.filter(m=>m.fin).length;
+  const vistos = mods.filter(m=>m.d && (m.d.v||0)>0).length;
+  const ejs = Object.keys(D.ej||{});
+  const resueltos = ejs.filter(k=>D.ej[k] && D.ej[k].ok).length;
+  const intentados = ejs.filter(k=>D.ej[k] && (D.ej[k].i||0)>0).length;
+  const seg = MODULOS.reduce((s,id)=> s + ((D.mod[id]&&D.mod[id].s)||0), 0);
+  return {mods, hechos, vistos, resueltos, intentados, seg, total:MODULOS.length};
+}
+
+function reloj(s){
+  s=Math.round(s||0);
+  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60);
+  return h? h+" h "+m+" min" : (m? m+" min" : s+" s");
+}
+
+function pintarBarra(){
+  let bar = $("#miBarra");
+  const dentroAlumno = esAlumno();
+  if(!dentroAlumno){ if(bar) bar.remove(); return; }
+  if(!bar){
+    const main=document.querySelector("main"); if(!main) return;
+    bar=document.createElement("div");
+    bar.id="miBarra"; bar.className="mibar noprint";
+    main.insertBefore(bar, main.firstChild);
+  }
+  const f=(window.Sync.ficha&&Sync.ficha())||{};
+  const r=resumen(1);
+  bar.innerHTML =
+    '<span class="yo">'+esc(f.nom||nomActual||"Estudiante")+'</span>'+
+    '<span class="chip">Cédula '+esc(cedActual)+'</span>'+
+    '<span class="chip">'+r.hechos+'/'+r.total+' módulos</span>'+
+    '<span class="chip">'+r.resueltos+'/18 ejercicios</span>'+
+    '<span class="sep"></span>'+
+    '<button class="btn sm" id="miClave">Cambiar contraseña</button>'+
+    '<button class="btn sm" id="miSalir">Salir</button>';
+  $("#miSalir").onclick = async ()=>{
+    guardarLocal(); await subir();
+    try{ await Sync.salir(); }catch(e){}
+    location.reload();
+  };
+  $("#miClave").onclick = ()=> formularioClave(bar);
+}
+
+function formularioClave(bar){
+  if($("#miClaveForm")) { $("#miClaveForm").remove(); return; }
+  const box=document.createElement("div");
+  box.id="miClaveForm";
+  box.className="card noprint";
+  box.style.cssText="margin:-8px 0 18px";
+  box.innerHTML =
+    '<h4 class="sub" style="margin-top:0">Cambiar mi contraseña</h4>'+
+    '<div class="inline">'+
+      '<div class="field" style="flex:1 1 200px"><label class="fl" for="mcA">Contraseña nueva</label>'+
+      '<input type="password" id="mcA" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>'+
+      '<div class="field" style="flex:1 1 200px"><label class="fl" for="mcB">Repítela</label>'+
+      '<input type="password" id="mcB" autocomplete="new-password"></div>'+
+      '<div class="field" style="flex:0 0 auto"><button class="btn verde" id="mcGo">Guardar</button></div>'+
+    '</div><p class="muted" id="mcMsg" style="margin:8px 0 0"></p>';
+  bar.parentNode.insertBefore(box, bar.nextSibling);
+  const msg=$("#mcMsg",box);
+  $("#mcGo",box).onclick = async ()=>{
+    const a=$("#mcA",box).value, b=$("#mcB",box).value;
+    if(a.length<6) return msg.innerHTML='<span style="color:var(--terra)">Usa al menos 6 caracteres.</span>';
+    if(a!==b)      return msg.innerHTML='<span style="color:var(--terra)">Las dos contraseñas no coinciden.</span>';
+    try{
+      await Sync.cambiarClave(a);
+      D.clave={cambiada:true, el:Date.now()}; sucio=true; guardarLocal(); subir();
+      msg.innerHTML='<span style="color:var(--verde)">&#10003; Contraseña cambiada. Úsala la próxima vez que entres.</span>';
+      setTimeout(()=>box.remove(), 2600);
+    }catch(err){
+      const m=String(err.code||err.message||"");
+      msg.innerHTML='<span style="color:var(--terra)">'+
+        (/requires-recent-login/.test(m)
+          ? "Por seguridad, sal y vuelve a entrar antes de cambiarla."
+          : "No se pudo cambiar: "+esc(m))+'</span>';
+    }
+  };
+}
+
+function pintarMiProgreso(){
+  if(!esAlumno()){ const v=$("#miProgreso"); if(v) v.remove(); return; }
+  const home=document.getElementById("home"); if(!home) return;
+  let box=$("#miProgreso");
+  if(!box){
+    box=document.createElement("div");
+    box.id="miProgreso"; box.className="card miprog noprint";
+    box.style.cssText="border-left:4px solid var(--azul);margin-bottom:20px";
+    home.insertBefore(box, home.firstChild);
+  }
+  const r=resumen(1);
+  const pctM = r.total? Math.round(r.hechos/r.total*100) : 0;
+  const pctE = Math.round(r.resueltos/18*100);
+  box.innerHTML =
+    '<h4 class="sub" style="margin-top:0">Mi progreso en el curso</h4>'+
+    '<p class="muted" style="margin:0 0 14px;font-size:.84rem">Esto es lo que ve el docente. Cuenta para la '+
+    'mitad de la nota de <b>Seguimiento y asistencia</b>: un módulo se da por leído cuando recorres todo su '+
+    'contenido y le dedicas un tiempo razonable.</p>'+
+    '<div class="barras">'+
+      '<div class="fila"><span class="nm">Módulos leídos<small>'+r.vistos+' abiertos de '+r.total+'</small></span>'+
+        '<span class="barra v"><i style="width:'+pctM+'%"></i></span>'+
+        '<span class="pc">'+r.hechos+'/'+r.total+'</span></div>'+
+      '<div class="fila"><span class="nm">Ejercicios resueltos<small>'+r.intentados+' intentados</small></span>'+
+        '<span class="barra"><i style="width:'+pctE+'%"></i></span>'+
+        '<span class="pc">'+r.resueltos+'/18</span></div>'+
+      '<div class="fila"><span class="nm">Tiempo de estudio<small>solo con la página delante</small></span>'+
+        '<span class="barra d"><i style="width:'+Math.min(100,Math.round(r.seg/5400*100))+'%"></i></span>'+
+        '<span class="pc">'+reloj(r.seg)+'</span></div>'+
+    '</div>'+
+    '<details class="sol" style="margin-top:14px"><summary>Ver módulo por módulo</summary><div class="body">'+
+      '<div class="tw"><table class="tight"><thead><tr><th style="text-align:left">Módulo</th>'+
+      '<th>Visitas</th><th>Tiempo</th><th>Recorrido</th><th>Estado</th></tr></thead><tbody>'+
+      r.mods.map(m=>{
+        const d=m.d||{};
+        return '<tr><td class="rh" style="text-align:left">'+esc(m.nom)+'</td>'+
+          '<td>'+(d.v||0)+'</td><td>'+reloj(d.s||0)+'</td><td>'+(d.p||0)+' %</td>'+
+          '<td>'+(m.fin? '<span class="tag ok">Leído</span>'
+                       : (d.v? '<span class="tag wip">A medias</span>'
+                             : '<span class="tag">Sin abrir</span>'))+'</td></tr>';
+      }).join("")+
+      '</tbody></table></div></div></details>';
+}
+
+/* ==================================================================
+   4 · ENGANCHES
+   ================================================================== */
+function avisarCambio(){
+  pintarPuerta();
+  /* sin sesión el progreso se mide igual, contra un cajón local que se
+     vuelca en la ficha del estudiante en cuanto entre con su cédula */
+  if(!cargado) cargarProgreso("", "");
+  pintarBarra();
+  pintarMiProgreso();
+  if(window.Auth) Auth.refrescar();
+}
+
+document.addEventListener("sesion-cambio", async ()=>{
+  pintarPuerta();
+  const ced = (window.Sync && Sync.cedula) ? Sync.cedula() : "";
+  if(esAlumno() && ced && ced!==cedActual){
+    const f=(Sync.ficha&&Sync.ficha())||{};
+    await cargarProgreso(ced, f.nom||"");
+    /* el estudiante ya está identificado: los talleres no tienen que
+       volver a preguntarle quién es */
+    if(window.Taller && Taller.EST){
+      Taller.EST.ced=ced; Taller.EST.nom=f.nom||ced;
+      LS.set("estudiante",{nom:Taller.EST.nom, ced:ced});
+      try{ Taller.pintarIdent(); Taller.pintarTalleres(); }catch(e){}
+    }
+  }
+  if(!esAlumno() && cedActual){ guardarLocal(); cedActual=""; D=VACIO(); }
+  if(!cargado && !esAlumno()){ D=LS.get(claveLS(""), VACIO()); cargado=true; }
+  pintarBarra();
+  pintarMiProgreso();
+});
+
+document.addEventListener("modulo-abierto", e=>{
+  entrarModulo(e.detail && e.detail.id);
+});
+
+window.Progreso = {
+  datos:()=> D,
+  cedula:()=> cedActual,
+  resumen,
+  moduloCompleto,
+  tiempoExigido,
+  MODULOS, NOMBRE_MOD, UMBRAL_PCT,
+  /* lo llama el banco de problemas */
+  ejercicio(n, ok){
+    if(!cargado) return;
+    const k="p"+n;
+    const e = D.ej[k] || (D.ej[k]={i:0, ok:false, t:0});
+    e.i=(e.i||0)+1;
+    if(ok){ e.ok=true; }
+    e.t=Date.now();
+    sucio=true; guardarLocal();
+    pintarBarra(); pintarMiProgreso();
+  },
+  herramienta(id){
+    if(!cargado) return;
+    D.lab[id]=(D.lab[id]||0)+1; sucio=true;
+  },
+  guardar(){ guardarLocal(); return subir(); }
+};
+
+pintarPuerta();
+setTimeout(pintarPuerta, 1500);
+})();
+</script>
 <script src="config.js"></script>
 <script id="syncJS" type="module">
 /* ==================================================================
    CAPA DE SINCRONIZACIÓN Y SESIÓN · Firebase
    Si no hay configuración o no hay internet, la aplicación sigue
-   funcionando completa en modo local. Nada se rompe.
+   funcionando en modo local: el progreso se guarda en el navegador
+   y sube solo en cuanto vuelve la conexión. Nada se rompe.
 
    Perfiles:
      administrador  gavuok@gmail.com
      docente        jose.castro@uniremington.edu.co
-     estudiante     sin cuenta
+     estudiante     entra con su CÉDULA como usuario. Por dentro eso
+                    es el correo  <cédula>@alumnos.estprob.local , que
+                    nunca ve nadie: es solo la forma que tiene Firebase
+                    de identificarlo, y lo que firman las reglas.
    ================================================================== */
 const CFG = window.FIREBASE_CONFIG || null;
 const ADMIN   = "gavuok@gmail.com";
 const DOCENTE = "jose.castro@uniremington.edu.co";
+const DOM_AL  = "@alumnos.estprob.local";
+const SDK     = "https://www.gstatic.com/firebasejs/10.12.2/";
 
-const S = { db:null, auth:null, listo:false, user:null, api:null };
+const soloDig  = c => String(c==null?"":c).replace(/\D/g,"");
+const correoDe = c => soloDig(c) + DOM_AL;
+const cedDe    = m => { const s=String(m||"").toLowerCase();
+                        return s.endsWith(DOM_AL) ? s.slice(0, -DOM_AL.length) : ""; };
+
+const S = { db:null, auth:null, listo:false, arrancado:false, user:null, api:null, ficha:null };
+
 window.Sync = {
-  roster:[], talleres:[], entregas:[],
+  roster:[], talleres:[], entregas:[], alumnos:[], progreso:[],
   estado:()=> S.listo ? "on" : "off",
+  arrancado:()=> S.arrancado,
   usuario:()=> S.user,
+  ficha:()=> S.ficha,
+  cedula(){ return S.user ? cedDe(S.user.email) : ""; },
   perfil(){
-    if(!S.user) return "estudiante";
+    if(!S.user) return "fuera";
     const e=(S.user.email||"").toLowerCase();
-    if(e===ADMIN) return "admin";
+    if(e===ADMIN)   return "admin";
     if(e===DOCENTE) return "docente";
+    if(e.endsWith(DOM_AL)) return S.ficha ? "alumno" : "sinficha";
     return "invitado";
   },
   esDocente(){ const p=this.perfil(); return p==="admin"||p==="docente"; },
+  esAlumno(){ return this.perfil()==="alumno"; },
   esAdmin(){ return this.perfil()==="admin"; },
   entrar:(email,pass)=> entrar(email,pass),
+  entrarAlumno:(ced,pass)=> entrar(correoDe(ced), pass),
   salir:()=> salir(),
+  cambiarClave:(nueva)=> cambiarClave(nueva),
+  crearCuenta:(ced,nom,pass)=> crearCuenta(ced,nom,pass),
+  guardarProgreso:(d)=> guardarProgreso(d),
+  leerProgreso:(ced)=> leerProgreso(ced),
+  borrarProgreso:(ced)=> borrarProgreso(ced),
   enviarEntrega:(e)=> encolar(e),
   publicarTaller:(t)=> publicarTaller(t),
   quitarTaller:(id)=> quitarTaller(id),
@@ -6828,7 +8038,8 @@ function pintarEstado(){
     d.innerHTML='<span class="d"></span>'+(S.listo? "Conectado con el grupo" : "Sin conexión · modo local");
   });
   document.dispatchEvent(new CustomEvent("sesion-cambio",{detail:{
-    perfil: window.Sync.perfil(), email: S.user? S.user.email : null, listo: S.listo }}));
+    perfil: window.Sync.perfil(), email: S.user? S.user.email : null,
+    ced: window.Sync.cedula(), listo: S.listo, arrancado: S.arrancado }}));
 }
 
 /* ---------- cola de reintento: nada se pierde sin internet ---------- */
@@ -6848,81 +8059,188 @@ window.addEventListener("online", ()=> vaciarCola());
 (async function(){
   if(!CFG || !CFG.projectId || CFG.projectId==="TU-PROYECTO"){
     console.info("[Sync] Sin configuración de Firebase: la aplicación funciona en modo local.");
-    pintarEstado(); return;
+    S.arrancado=true; pintarEstado(); return;
   }
   try{
-    const {initializeApp} = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-    const {getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot}
-      = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-    const {getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence}
-      = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+    const {initializeApp} = await import(SDK+"firebase-app.js");
+    const {getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot}
+      = await import(SDK+"firebase-firestore.js");
+    const {getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+           setPersistence, browserLocalPersistence, updatePassword}
+      = await import(SDK+"firebase-auth.js");
 
     const app = initializeApp(CFG);
     S.db   = getFirestore(app);
     S.auth = getAuth(app);
-    S.api  = {collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot,
-              signInWithEmailAndPassword, signOut, onAuthStateChanged};
+    S.api  = {collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot,
+              signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword};
     try{ await setPersistence(S.auth, browserLocalPersistence); }catch(e){}
 
     S.listo = true;
-    onAuthStateChanged(S.auth, u=>{
-      S.user = u;
+    onAuthStateChanged(S.auth, async u=>{
+      S.user = u; S.ficha = null;
+      /* Un estudiante no entra solo por tener cuenta: tiene que estar
+         matriculado, es decir, tener su ficha en /alumnos. Así, quien se
+         registre por su cuenta contra la API se queda en la puerta. */
+      if(u){
+        const e=(u.email||"").toLowerCase();
+        if(e.endsWith(DOM_AL)){
+          try{
+            const snap = await getDoc(doc(S.db,"alumnos", cedDe(e)));
+            S.ficha = snap.exists() ? snap.data() : null;
+          }catch(err){ S.ficha = null; }
+        }
+      }
+      S.arrancado = true;
+      escuchar();
       pintarEstado();
-      escucharPrivado();
       if(window.Docente) Docente.refrescarEntregas();
-      console.info("[Sync] sesión:", u? u.email : "estudiante (sin cuenta)");
+      if(window.Sync.esAlumno()) vaciarCola();
+      console.info("[Sync] sesión:", u? (window.Sync.perfil()+" · "+u.email) : "sin iniciar");
     });
     pintarEstado();
-    escucharPublico();
-    vaciarCola();
     console.info("[Sync] Conectado a Firestore.");
   }catch(err){
     console.warn("[Sync] No se pudo conectar:", err.message);
-    S.listo=false; pintarEstado();
+    S.listo=false; S.arrancado=true; pintarEstado();
   }
 })();
 
-/* ---------- lo que puede leer cualquiera ---------- */
-function escucharPublico(){
-  const {collection, onSnapshot, doc} = S.api;
-  onSnapshot(doc(S.db,"curso","roster"), snap=>{
-    const d=snap.data(); window.Sync.roster = (d&&d.lista)||[];
-    if(window.Taller) Taller.refrescar();
-  }, e=>console.warn("[Sync] roster:", e.code));
-
-  onSnapshot(collection(S.db,"talleres"), snap=>{
-    window.Sync.talleres = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    if(window.Taller) Taller.pintarTalleres();
-    if(window.Docente) Docente.refrescarTalleres();
-  }, e=>console.warn("[Sync] talleres:", e.code));
-}
-
-/* ---------- lo que solo puede leer el docente ---------- */
-let desuscribirEntregas = null;
-function escucharPrivado(){
-  if(desuscribirEntregas){ desuscribirEntregas(); desuscribirEntregas=null; }
-  window.Sync.entregas = [];
-  if(!window.Sync.esDocente()){
-    if(window.Docente) Docente.refrescarEntregas();
+/* ---------- escuchas, según quién haya entrado ----------
+   Ahora que la lista del grupo y los talleres exigen sesión, no se
+   pueden abrir antes de entrar: las escuchas se montan y se desmontan
+   con cada cambio de sesión. */
+let cortes = [];
+function cortar(){ cortes.forEach(f=>{ try{ f(); }catch(e){} }); cortes=[]; }
+function escuchar(){
+  cortar();
+  const Y = window.Sync;
+  Y.roster=[]; Y.talleres=[]; Y.entregas=[]; Y.alumnos=[]; Y.progreso=[];
+  if(!S.user){
+    if(window.Taller){ Taller.refrescar(); Taller.pintarTalleres(); }
+    if(window.Docente){ Docente.refrescarEntregas(); Docente.refrescarTalleres(); }
     return;
   }
-  const {collection, onSnapshot} = S.api;
-  desuscribirEntregas = onSnapshot(collection(S.db,"entregas"), snap=>{
-    window.Sync.entregas = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  const {collection, onSnapshot, doc} = S.api;
+
+  cortes.push(onSnapshot(doc(S.db,"curso","roster"), snap=>{
+    const d=snap.data(); Y.roster = (d&&d.lista)||[];
+    if(window.Taller) Taller.refrescar();
+    if(window.Panel)  Panel.refrescar();
+  }, e=>console.warn("[Sync] roster:", e.code)));
+
+  cortes.push(onSnapshot(collection(S.db,"talleres"), snap=>{
+    Y.talleres = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(window.Taller)  Taller.pintarTalleres();
+    if(window.Docente) Docente.refrescarTalleres();
+  }, e=>console.warn("[Sync] talleres:", e.code)));
+
+  if(!Y.esDocente()) return;
+
+  cortes.push(onSnapshot(collection(S.db,"entregas"), snap=>{
+    Y.entregas = snap.docs.map(d=>({id:d.id, ...d.data()}));
     if(window.Docente){ Docente.refrescarEntregas(); Docente.refrescarTalleres(); }
-  }, e=>console.warn("[Sync] entregas:", e.code));
+  }, e=>console.warn("[Sync] entregas:", e.code)));
+
+  cortes.push(onSnapshot(collection(S.db,"alumnos"), snap=>{
+    Y.alumnos = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(window.Panel) Panel.refrescar();
+  }, e=>console.warn("[Sync] alumnos:", e.code)));
+
+  cortes.push(onSnapshot(collection(S.db,"progreso"), snap=>{
+    Y.progreso = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(window.Panel) Panel.refrescar();
+  }, e=>console.warn("[Sync] progreso:", e.code)));
 }
 
 /* ---------- sesión ---------- */
 async function entrar(email, pass){
   if(!S.listo) throw new Error("Sin conexión con el servidor.");
   const {signInWithEmailAndPassword} = S.api;
-  await signInWithEmailAndPassword(S.auth, String(email).trim(), pass);
+  await signInWithEmailAndPassword(S.auth, String(email).trim().toLowerCase(), pass);
+  /* onAuthStateChanged ya habrá cargado la ficha cuando esto resuelva
+     en la práctica, pero no está garantizado: la esperamos. */
+  for(let i=0;i<30 && S.user==null;i++) await new Promise(r=>setTimeout(r,60));
   return window.Sync.perfil();
 }
 async function salir(){
   if(!S.listo || !S.auth) return;
   await S.api.signOut(S.auth);
+}
+async function cambiarClave(nueva){
+  if(!S.listo || !S.auth || !S.auth.currentUser) throw new Error("Sin sesión iniciada.");
+  await S.api.updatePassword(S.auth.currentUser, String(nueva));
+  return true;
+}
+
+/* ---------- alta de cuentas, desde la planilla del docente ----------
+   Se crea en una instancia SECUNDARIA de Firebase. Si se usara la
+   principal, crear la cuenta dejaría al docente con la sesión del
+   alumno recién creado y lo echaría de su propio panel. */
+async function crearCuenta(ced, nom, pass){
+  if(!S.listo) throw new Error("Sin conexión con el servidor.");
+  if(!window.Sync.esDocente()) throw new Error("Solo el docente puede crear cuentas.");
+  ced = soloDig(ced);
+  if(ced.length<5) throw new Error("La cédula debe tener al menos 5 dígitos.");
+  if(String(pass).length<6) throw new Error("La contraseña necesita 6 caracteres como mínimo.");
+
+  const {initializeApp, deleteApp} = await import(SDK+"firebase-app.js");
+  const {getAuth, createUserWithEmailAndPassword, signOut, setPersistence, inMemoryPersistence}
+    = await import(SDK+"firebase-auth.js");
+
+  let uid="", yaExistia=false;
+  const secundaria = initializeApp(CFG, "alta-"+ced+"-"+Date.now());
+  try{
+    const authSec = getAuth(secundaria);
+    try{ await setPersistence(authSec, inMemoryPersistence); }catch(e){}
+    try{
+      const cred = await createUserWithEmailAndPassword(authSec, correoDe(ced), String(pass));
+      uid = cred.user.uid;
+      await signOut(authSec);
+    }catch(err){
+      if(String(err.code||"")==="auth/email-already-in-use") yaExistia=true;
+      else throw err;
+    }
+  } finally {
+    try{ await deleteApp(secundaria); }catch(e){}
+  }
+
+  /* La ficha se escribe siempre: es la que habilita realmente al
+     estudiante, y si la cuenta ya existía puede ser justo lo que falta. */
+  await S.api.setDoc(S.api.doc(S.db,"alumnos",ced), {
+    ced, nom:String(nom||"").slice(0,120), usuario:ced,
+    creado:Date.now(), creadoPor:(S.user&&S.user.email)||"", uid, activo:true
+  });
+  return {uid, yaExistia};
+}
+
+/* ---------- progreso del estudiante ---------- */
+async function guardarProgreso(d){
+  if(!S.listo) throw new Error("sin conexión");
+  const ced = window.Sync.cedula();
+  if(!ced) throw new Error("no hay estudiante en sesión");
+  await S.api.setDoc(S.api.doc(S.db,"progreso",ced), {
+    ced,
+    nom:  String(d.nom||"").slice(0,120),
+    mod:  d.mod || {},
+    ej:   d.ej  || {},
+    lab:  d.lab || {},
+    clave:d.clave || {},
+    entro:d.entro || 0,
+    actualizado: Date.now()
+  });
+  return true;
+}
+async function leerProgreso(ced){
+  if(!S.listo) return null;
+  const snap = await S.api.getDoc(S.api.doc(S.db,"progreso", soloDig(ced)));
+  return snap.exists() ? snap.data() : null;
+}
+async function borrarProgreso(ced){
+  if(!S.listo) throw new Error("Sin conexión.");
+  if(!window.Sync.esDocente()) throw new Error("Solo el docente puede anular el progreso.");
+  await S.api.deleteDoc(S.api.doc(S.db,"progreso", soloDig(ced)));
+  return true;
 }
 
 /* ---------- escrituras ---------- */
