@@ -3346,9 +3346,25 @@ o los botones <em>Anterior / Siguiente</em> del pie de cada módulo. Atajos: <co
     ejercicios del banco resolvió. Se actualiza en vivo mientras trabajan.</p>
 
     <h4 class="sub">Qué módulos cuentan para la nota</h4>
-    <div id="dSegMods" class="pills" style="margin-bottom:6px"></div>
-    <p class="muted" style="font-size:.8rem;margin:0 0 16px">Marca los módulos que exiges leer. Los demás se
+    <div id="dSegMods" class="pills" style="margin-bottom:10px"></div>
+    <p class="muted" style="font-size:.8rem;margin:0 0 12px">Marca los módulos que exiges leer. Los demás se
     siguen registrando y los ves en la tabla, pero no entran en el cálculo.</p>
+    <div class="tw"><table class="tight" id="dLeyenda"></table></div>
+    <div class="box key" style="margin:14px 0 16px"><span class="bt">Cuándo pasa a «leído»</span>
+    Hacen falta las <b>dos</b> cosas a la vez:
+    <ol style="margin:8px 0 0;padding-left:20px">
+      <li><b>Haber recorrido el 90 %</b> del módulo, es decir haber bajado casi hasta el final.</li>
+      <li><b>Haberle dedicado el tiempo mínimo</b> de la tabla de arriba, que sale del tamaño del módulo
+          a razón de unas 180 palabras por minuto. Solo cuenta el tiempo con la pestaña al frente: si se va
+          a otra ventana o bloquea el celular, el reloj se detiene.</li>
+    </ol>
+    <p style="margin:8px 0 0">Mientras falte una de las dos, en la tabla se ve el porcentaje recorrido en
+    ámbar. <em>Exigencia de lectura</em> multiplica esos tiempos: suave los baja al 60 %, estricta los sube
+    un 60 %.</p></div>
+    <details class="sol" style="margin-bottom:16px">
+      <summary>Los 18 ejercicios que se cuentan</summary>
+      <div class="body"><div class="tw"><table class="tight" id="dBanco"></table></div></div>
+    </details>
 
     <h4 class="sub">Reparto de la nota</h4>
     <div class="pesos" style="margin-bottom:6px">
@@ -4285,10 +4301,16 @@ $("#btnOpenAll").onclick = ()=>{ allOpen=!allOpen; $$("details.sol").forEach(d=>
 window.Lectura = {
   UMBRAL_PCT: 90,
   /* Tiempo mínimo, deducido de lo que ocupa el módulo: unas 180
-     palabras por minuto, con suelo de 45 s y techo de 15 min. La
-     exigencia (0,6 · 1 · 1,6) la fija el docente en su panel. */
+     palabras por minuto, con suelo de 45 s y techo de 30 min. La
+     exigencia (0,6 · 1 · 1,6) la fija el docente en su panel.
+
+     El techo era de 15 min y aplastaba el control: los cuatro módulos
+     grandes pedían 15 min en suave, en normal y en estricta, o sea que
+     elegir exigencia no hacía nada donde más importaba. Con 30 min los
+     tres niveles se separan, y el panel muestra los minutos exactos de
+     cada módulo para que la decisión se tome viendo el número. */
   tiempoExigido(palabras, exigencia){
-    return Math.max(45, Math.min(900, Math.round((palabras||600)/3 * (exigencia||1))));
+    return Math.max(45, Math.min(1800, Math.round((palabras||600)/3 * (exigencia||1))));
   },
   completo(m, exigencia){
     if(!m) return false;
@@ -5484,6 +5506,11 @@ if($("#pbList")){
   $$("#pbFilter .pill").forEach(p=> p.onclick=()=>{ $$("#pbFilter .pill").forEach(x=>x.classList.remove("on")); p.classList.add("on"); pbRender(p.dataset.pb); });
   pbRender("all");
 }
+/* Resumen para el panel del docente: qué ejercicios se están contando.
+   Sin las soluciones, que no tiene por qué cargar dos veces. */
+window.BancoProblemas = PROBS.map(p=>({
+  n:p.n, c:p.c, dif:p.dif, q:p.q, r:(RESP[p.n]||[]).length
+}));
 
 /* ==================================================================
    MÓDULO 11 · SEGUIMIENTO Y NOTAS DEL DOCENTE
@@ -7200,16 +7227,97 @@ function notaAsistenciaDe(ced){
   return t? {nota:1+4*(p/t), sesiones:t} : null;
 }
 
+/* Lo que conviene saber antes de exigir un módulo. Solo se avisa donde
+   hay un motivo real para no exigirlo; del resto se dice qué son. */
+const MOD_NOTA = {
+  m1:"El módulo oficial 2016 completo. Es el más largo del curso.",
+  m2:"⚠ Se abre con clave. Si no la has repartido, el estudiante no puede leerlo: no lo exijas.",
+  m3:"Teoría de conjuntos, contingencia y probabilidad.",
+  m4:"Conteo, permutaciones, combinaciones, árbol y Bayes.",
+  m5:"⚠ Reservado para la solución del Taller 2: todavía no tiene contenido que leer.",
+  m6:"Buscador: el tema aparece al elegirlo, no es un texto corrido. Se mide el recorrido y el tiempo, no cuántos temas consultó.",
+  m7:"7 herramientas de cálculo. Se mide el tiempo de uso, no una lectura seguida.",
+  m8:"Aquí están los 18 ejercicios, que además se cuentan aparte.",
+  m9:"Las erratas del material oficial, con su corrección. Es corto.",
+  m10:"Propuestas de ampliación. No es materia evaluable.",
+  m12:"Donde presentan los talleres calificados. Esa nota va aparte, en las evaluaciones 1 y 2."
+};
+/* El tamaño se mide en el navegador que lo pregunte, y los módulos que
+   se dibujan solos salen cortos hasta que alguien los abre. Por eso se
+   toma también lo que midieron los estudiantes al leerlos de verdad, y
+   se usa el mayor: el panel converge al tamaño real sin que el docente
+   tenga que pasar por cada módulo. */
+function palabrasDeMod(id){
+  let w = (window.Progreso && Progreso.palabras) ? Progreso.palabras(id) : 0;
+  ((window.Sync&&Sync.progreso)||[]).forEach(pr=>{
+    const m=(pr.mod||{})[id];
+    if(m && (m.w||0) > w) w = m.w;
+  });
+  return w;
+}
+function minutos(seg){
+  seg=Math.round(seg||0);
+  return seg<60 ? seg+" s" : Math.round(seg/60)+" min";
+}
+
 function pintarSegMods(){
   const box=$("#dSegMods"); if(!box) return;
   const sel=modsContados();
   box.innerHTML=MODS_ACT.map(id=>
-    '<button class="pill'+(sel.indexOf(id)>=0?" on":"")+'" data-m="'+id+'">'+esc(MOD_LARGO[id])+'</button>').join("");
+    '<button class="pill'+(sel.indexOf(id)>=0?" on":"")+'" data-m="'+id+'">'+
+    '<b style="font-family:var(--mono);font-size:.78em;opacity:.75">'+MOD_CORTO[id]+'</b> '+
+    esc(MOD_LARGO[id])+'</button>').join("");
   $$(".pill",box).forEach(b=> b.onclick=()=>{
     let v=modsContados();
     v = v.indexOf(b.dataset.m)>=0 ? v.filter(x=>x!==b.dataset.m) : v.concat([b.dataset.m]);
     guardarMods(v); pintarSegMods(); pintarActividad();
   });
+}
+
+/* Qué es cada columna de la matriz y cuánta lectura pide. */
+function pintarLeyenda(){
+  const T=$("#dLeyenda"); if(!T) return;
+  const sel=modsContados(), ex=exigencia();
+  let h='<caption>Qué es cada columna de la tabla de abajo'+
+    '<small>El tiempo mínimo lo calcula la propia aplicación según lo que ocupa cada módulo, '+
+    'y se mueve con la exigencia que elijas.</small></caption>'+
+    '<thead><tr><th>Col.</th><th style="text-align:left">Módulo</th><th>Tamaño</th>'+
+    '<th>Lectura mínima</th><th>¿Cuenta?</th><th style="text-align:left">Qué es</th></tr></thead><tbody>';
+  MODS_ACT.forEach(id=>{
+    const pal=palabrasDeMod(id);
+    const cuenta=sel.indexOf(id)>=0;
+    const nota=MOD_NOTA[id]||"";
+    const ojo=/^⚠/.test(nota);
+    h+='<tr'+(ojo&&cuenta?' style="background:var(--terra-soft)"':'')+'>'+
+       '<td><span class="cel '+(cuenta?"ok":"no")+'">'+MOD_CORTO[id]+'</span></td>'+
+       '<td class="rh" style="text-align:left">'+esc(MOD_LARGO[id])+'</td>'+
+       '<td class="muted">'+(pal? pal.toLocaleString("es-CO")+" palabras" : "—")+'</td>'+
+       '<td>'+(pal? minutos(Lectura.tiempoExigido(pal, ex)) : "—")+'</td>'+
+       '<td>'+(cuenta? '<span class="tag ok">Sí</span>' : '<span class="tag">No</span>')+'</td>'+
+       '<td style="text-align:left'+(ojo?';color:var(--terra);font-weight:600':'')+'">'+esc(nota)+'</td>'+
+       '</tr>';
+  });
+  T.innerHTML=h+'</tbody>';
+
+  const B=$("#dBanco");
+  if(B){
+    const pbs=window.BancoProblemas||[];
+    const TEMA={conj:"Conjuntos", cont:"Contingencia", prob:"Probabilidad",
+                cont2:"Conteo", bayes:"Árbol y Bayes"};
+    B.innerHTML='<caption>Banco de problemas · módulo 8'+
+      '<small>Un ejercicio cuenta como resuelto cuando acierta <b>todas</b> sus casillas de una vez. '+
+      'Si se rinde y abre la solución, queda como intento pero no suma.</small></caption>'+
+      '<thead><tr><th>N.º</th><th>Tema</th><th>Nivel</th><th>Casillas</th>'+
+      '<th style="text-align:left">Enunciado</th></tr></thead><tbody>'+
+      (pbs.length
+        ? pbs.map(p=>'<tr><td class="rh">'+p.n+'</td><td>'+esc(TEMA[p.c]||p.c)+'</td>'+
+            '<td><span class="tag '+(p.dif==="Básico"?"ok":p.dif==="Intermedio"?"wip":"no")+'">'+
+            esc(p.dif)+'</span></td><td>'+p.r+'</td>'+
+            '<td class="muted" style="text-align:left">'+esc(String(p.q).slice(0,110))+
+            (String(p.q).length>110?"…":"")+'</td></tr>').join("")
+        : '<tr><td colspan="5" class="muted">Abre una vez el módulo 8 para que se cargue la lista.</td></tr>')+
+      '</tbody>';
+  }
 }
 
 function relojito(s){
@@ -7232,6 +7340,7 @@ function filasActividad(){
 
 function pintarActividad(){
   const T=$("#dTablaAct"); if(!T) return;
+  pintarLeyenda();
   const q=(($("#dActBuscar")||{value:""}).value||"").toLowerCase().trim();
   let filas=filasActividad();
   if(q) filas=filas.filter(f=> f.nom.toLowerCase().includes(q) || String(f.ced).includes(q));
@@ -7777,7 +7886,13 @@ function palabrasDe(id){
   let n=0;
   try{
     const c=v.cloneNode(true);
-    c.querySelectorAll("script,style,noscript,.modnav,.authgate,.authbar,.mibar,.miprog,.noprint")
+    /* Se quita solo el armazón de la propia aplicación. Ojo con .noprint:
+       descartarlo dejaba la Zona de estudio en 36 palabras y el
+       Laboratorio en 81, porque en esos módulos el contenido de verdad
+       son las fichas y las herramientas interactivas, que no se imprimen.
+       Con eso, los dos pedían el mínimo de 45 s y se daban por leídos
+       casi al entrar. */
+    c.querySelectorAll("script,style,noscript,.modnav,.authgate,.authbar,.mibar,.miprog")
       .forEach(x=>x.remove());
     n=(c.textContent||"").trim().split(/\s+/).filter(Boolean).length;
   }catch(e){ n=0; }
@@ -8014,6 +8129,8 @@ window.Progreso = {
   resumen,
   moduloCompleto,
   tiempoExigido,
+  /* el panel del docente lo usa para decir cuánta lectura exige cada módulo */
+  palabras: palabrasDe,
   MODULOS, NOMBRE_MOD, UMBRAL_PCT,
   /* lo llama el banco de problemas */
   ejercicio(n, ok){
