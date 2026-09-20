@@ -575,11 +575,14 @@ body.cerrado{overflow:hidden}
 .matriz{font-size:.8rem}
 .matriz th{font-size:.68rem;padding:6px 4px}
 .matriz td{padding:5px 4px;text-align:center}
-.matriz td.nom{text-align:left;font-weight:700;white-space:nowrap;max-width:270px}
-/* el nombre se recorta si hace falta, pero los avisos que lo acompañan
-   («sin cuenta», «fuera de la planilla») no se pueden perder */
-.matriz td.nom .n{display:inline-block;max-width:160px;overflow:hidden;
-  text-overflow:ellipsis;vertical-align:middle}
+.matriz td.nom{text-align:left;font-weight:700;max-width:280px}
+/* El nombre cede espacio y se recorta; los avisos que lo acompañan
+   («sin cuenta», «falta en la planilla») conservan el suyo y no se
+   derraman sobre la columna de al lado. */
+.matriz td.nom .env{display:flex;align-items:center;gap:6px;min-width:0}
+.matriz td.nom .n{flex:1 1 auto;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.matriz td.nom .tag{flex:0 0 auto;white-space:nowrap}
 .matriz .cel{display:inline-block;min-width:30px;padding:2px 5px;border-radius:5px;
   font-family:var(--mono);font-size:.71rem;font-weight:700;line-height:1.5}
 .matriz .cel.ok{background:var(--verde-soft);color:var(--verde)}
@@ -3321,10 +3324,16 @@ o los botones <em>Anterior / Siguiente</em> del pie de cada módulo. Atajos: <co
     <div class="inline" style="margin-bottom:12px">
       <div class="field" style="flex:0 0 auto"><button class="btn verde" id="dAltaTodos">&#43; Crear los accesos que faltan</button></div>
       <div class="field" style="flex:0 0 auto"><button class="btn sm" id="dAltaCopiar">&#128203; Copiar usuarios y contraseñas</button></div>
+      <div class="field" style="flex:0 0 auto"><button class="btn sm" id="dRecuperar">&#11014; Recuperar la lista desde el servidor</button></div>
       <div class="field" style="flex:1 1 auto;text-align:right"><span class="chip g" id="dAltaRes">—</span></div>
     </div>
     <div class="tw"><table id="dTablaAlta"></table></div>
     <div id="dAltaSalida"></div>
+    <div class="box warn"><span class="bt">Si te falta media lista</span>
+    La planilla se guarda <b>en este navegador</b>, no en el servidor: si abres la app en otro computador, en otro
+    perfil o borras los datos de navegación, aparecerá vacía o incompleta aunque los estudiantes ya tengan su cuenta.
+    <b>Recuperar la lista desde el servidor</b> vuelve a traer a todos los que tienen acceso o han entrado alguna vez,
+    sin tocar las notas que ya tengas puestas aquí.</div>
     <div class="box note" style="margin-bottom:0"><span class="bt">Si un estudiante olvida su contraseña</span>
     Entra a la consola de Firebase, <b>Authentication &rarr; Users</b>, borra esa cuenta, y aquí pulsa
     <em>Crear acceso</em> otra vez. Vuelve a quedar con la cédula como contraseña y <b>no se pierde nada</b> de su
@@ -6984,8 +6993,22 @@ function dibujarEvolucion(){
 /* ---------- publicar la lista del grupo ---------- */
 function publicarRoster(){
   const db=planilla();
-  if(window.Sync && Sync.estado()==="on" && db.length)
-    Sync.publicarRoster(db.map(s=>({ced:s.ced, nom:s.nom}))).catch(()=>{});
+  if(!(window.Sync && Sync.estado()==="on" && Sync.esDocente() && db.length)) return;
+  /* Se publica la UNIÓN con lo que ya hay en el servidor. La planilla
+     vive en el navegador, así que un equipo con una copia incompleta
+     —otro computador, otro perfil, datos borrados— no puede borrar del
+     servidor a los estudiantes que se registraron desde otro sitio. */
+  const m={};
+  ((Sync.roster)||[]).forEach(s=>{
+    const c=String(s.ced||"").replace(/\D/g,"");
+    if(c) m[c]={ced:c, nom:String(s.nom||"")};
+  });
+  db.forEach(s=>{
+    const c=String(s.ced||"").replace(/\D/g,"");
+    if(c) m[c]={ced:c, nom:String(s.nom || (m[c]&&m[c].nom) || "")};
+  });
+  const lista=Object.values(m).slice(0,300);
+  if(lista.length) Sync.publicarRoster(lista).catch(()=>{});
 }
 
 /* ---------- 8 · CUENTAS DE LOS ESTUDIANTES ----------
@@ -7083,6 +7106,50 @@ if($("#dAltaCopiar")) $("#dAltaCopiar").onclick = ()=>{
     a.select(); try{ document.execCommand("copy"); fin(); }catch(e){ alert("No se pudo copiar."); }
     a.remove();
   }
+};
+
+/* Todo el que el servidor conoce: los de la lista publicada, los que
+   tienen cuenta y los que han entrado alguna vez. Sirve para rehacer la
+   planilla en un equipo donde falte, porque esa vive en el navegador. */
+function conocidosEnLaNube(){
+  const m={};
+  const meter=(ced,nom)=>{
+    ced=String(ced||"").replace(/\D/g,"");
+    if(ced.length<5) return;
+    nom=String(nom||"").trim();
+    /* nos quedamos con el nombre más completo de los tres sitios */
+    if(!m[ced] || nom.length > (m[ced].nom||"").length) m[ced]={ced, nom:(nom || (m[ced]&&m[ced].nom) || "")};
+  };
+  ((window.Sync&&Sync.roster)||[]).forEach(s=> meter(s.ced, s.nom));
+  ((window.Sync&&Sync.alumnos)||[]).forEach(a=> meter(a.ced||a.id, a.nom));
+  ((window.Sync&&Sync.progreso)||[]).forEach(p=> meter(p.ced||p.id, p.nom));
+  return Object.values(m);
+}
+
+if($("#dRecuperar")) $("#dRecuperar").onclick=()=>{
+  if(!window.Sync || Sync.estado()!=="on") return alert("Sin conexión con el servidor.");
+  if(!Sync.esDocente()) return alert("Inicia sesión como docente.");
+  const nube=conocidosEnLaNube();
+  if(!nube.length) return alert("El servidor todavía no conoce a ningún estudiante.");
+  const db=planilla(), tiene={};
+  db.forEach(s=> tiene[String(s.ced)]=1);
+  const nuevos=nube.filter(s=> !tiene[s.ced]);
+  if(!nuevos.length)
+    return alert("Nada que recuperar: la planilla de este equipo ya tiene a los "+
+                 nube.length+" estudiante(s) que conoce el servidor.");
+  if(!confirm("Se van a agregar "+nuevos.length+" estudiante(s) a la planilla de este equipo:\n\n"+
+              nuevos.slice(0,12).map(s=>"· "+(s.nom||s.ced)).join("\n")+
+              (nuevos.length>12? "\n· … y "+(nuevos.length-12)+" más" : "")+
+              "\n\nLas notas que ya tengas puestas no se tocan.\n¿Seguimos?")) return;
+  nuevos.forEach(s=> db.push({ced:s.ced, nom:s.nom || ("Sin nombre · "+s.ced), n:[null,null,null,null]}));
+  db.sort((a,b)=> String(a.nom).localeCompare(String(b.nom),"es"));
+  guardarPlanilla(db);
+  if(window.gbRender) window.gbRender();
+  refrescarPanel(); pintarAsistencia(); dibujarEvolucion();
+  const sinNombre=nuevos.filter(s=>!s.nom).length;
+  alert(nuevos.length+" estudiante(s) recuperados.\n\n"+
+        (sinNombre? sinNombre+" quedaron sin nombre: corrígelos escribiendo encima en la planilla.\n\n":"")+
+        "Revísalos en «Seguimiento y notas».");
 };
 
 /* ---------- 9 · ACTIVIDAD EN LA APP ---------- */
@@ -7199,9 +7266,10 @@ function pintarActividad(){
     const a=f.pr? actividadDe(f.pr) : null;
     const md=(f.pr&&f.pr.mod)||{};
     h+='<tr'+(f.cuenta?'':' class="sincuenta"')+'>'+
-       '<td class="nom" title="'+esc(f.nom)+'"><span class="n">'+esc(f.nom)+'</span>'+
-         (f.cuenta? '' : ' <span class="tag">sin cuenta</span>')+
-         (f.enPlanilla? '' : ' <span class="tag no">fuera de la planilla</span>')+'</td>'+
+       '<td class="nom" title="'+esc(f.nom)+'"><div class="env"><span class="n">'+esc(f.nom)+'</span>'+
+         (f.cuenta? '' : '<span class="tag">sin cuenta</span>')+
+         (f.enPlanilla? '' : '<span class="tag no" title="Tiene cuenta y ha entrado, '+
+           'pero no está en la planilla de este equipo">falta en la planilla</span>')+'</div></td>'+
        '<td class="muted">'+esc(f.ced)+'</td>';
     MODS_ACT.forEach(id=>{
       const m=md[id];
