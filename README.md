@@ -78,6 +78,8 @@ nunca cuenta 1,0 en la mitad de la app, y la aplicación avisa de cuántos está
 El módulo *Clase animada · Taller 4* abre la clase del Profe Tomás, que resuelve en voz alta los 13
 ejercicios del taller y los va escribiendo en el tablero. Se puede pausar, volver atrás, cambiar la
 velocidad y la voz, o saltar a un ejercicio; el guion completo queda debajo, por si no hay sonido.
+Arranca con la voz «Google español» (es-ES) del navegador, la que trae Chrome; donde no existe
+—iPhone, Safari, Firefox, Edge— usa la voz grabada del Profe Tomás.
 
 La clase está en [`clase-taller4/`](clase-taller4/) y también se abre sola, sin el aula. Las voces
 son un mp3 por paso y se descargan a medida que suenan, así que empieza enseguida aun con datos del

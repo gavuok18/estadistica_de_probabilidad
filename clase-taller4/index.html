@@ -258,7 +258,7 @@ html.embebida header.top{ display:none; }
     <label><input type="checkbox" id="autoNext" checked> Seguir al siguiente ejercicio</label>
   </div>
 
-  <p class="vnote" id="voiceNote">Buscando voces en español de Colombia…</p>
+  <p class="vnote" id="voiceNote">Buscando la voz de Google en español…</p>
   <div class="chips" id="chips" aria-label="Ejercicios"></div>
 
   <p class="tip">Para convertir la clase en un video: inicie una grabación de pantalla (en Windows, <b>Win + Alt + R</b> con la Xbox Game Bar; en celular, la grabación de pantalla del panel rápido) y reproduzca la clase completa con «Seguir al siguiente ejercicio» activado. La voz natural viene incluida en la página, así que suena igual en cualquier computador o celular.</p>
@@ -417,8 +417,11 @@ setTimeout(function(){ var p = window.__mjPending.splice(0); p.forEach(function(
 
 /* ============ VOZ ============ */
 function norm(l){ return (l||'').replace('_','-').toLowerCase(); }
+/* La voz por defecto: «Google español» (es-ES), la que trae Chrome. */
+function isGoogleES(v){ return norm(v.lang) === 'es-es' && /google/i.test(v.name); }
 function score(v){
   var l = norm(v.lang), n = v.name, sc = 0;
+  if (isGoogleES(v)) sc += 2000;
   if (l === 'es-co') sc += 1000;
   else if (l === 'es-419' || l === 'es-us' || l === 'es-mx') sc += 500;
   else if (l.indexOf('es') === 0) sc += 100;
@@ -433,12 +436,17 @@ function loadVoices(){
   voices.sort(function(a,b){ return score(b) - score(a); });
   var sel = $('voiceSel'), cur = sel.value;
   sel.innerHTML = NAT_OPTS + '<optgroup label="Voces del navegador">' + voices.map(function(v, i){ return '<option value="b'+i+'">'+v.name+' ('+v.lang+')</option>'; }).join('') + '</optgroup>';
-  if (cur && sel.querySelector('option[value="'+cur+'"]')) sel.value = cur; else sel.value = 'nat1';
+  /* Mientras nadie haya escogido a mano y la clase no haya empezado, arranca con
+     Google español; el navegador que no la tiene se queda con la voz grabada. */
+  var g = -1;
+  voices.forEach(function(v, i){ if (g < 0 && isGoogleES(v)) g = i; });
+  if (!userPicked && !started) sel.value = g >= 0 ? 'b' + g : 'nat1';
+  else if (cur && sel.querySelector('option[value="'+cur+'"]')) sel.value = cur; else sel.value = 'nat1';
   pickVoice();
   voiceStatus();
 }
-var NAT_OPTS = '<optgroup label="Voces naturales (recomendadas)"><option value="nat1">Profe Tomás · voz natural 1</option><option value="nat2">Profe Tomás · voz natural 2</option></optgroup>';
-var natKey = 'v1';
+var NAT_OPTS = '<optgroup label="Voces grabadas del Profe Tomás"><option value="nat1">Profe Tomás · voz natural 1</option><option value="nat2">Profe Tomás · voz natural 2</option></optgroup>';
+var natKey = 'v1', userPicked = false;
 function pickVoice(){
   var v = $('voiceSel').value || 'nat1';
   if (v.indexOf('nat') === 0){ natKey = v === 'nat2' ? 'v2' : 'v1'; chosenVoice = null; }
@@ -450,13 +458,16 @@ function voiceStatus(){
   if (natKey){
     el.className = 'vnote ok';
     el.innerHTML = '✓ Voz natural grabada del Profe Tomás (español latinoamericano). Suena igual en cualquier navegador y celular.';
+  } else if (chosenVoice && isGoogleES(chosenVoice)){
+    el.className = 'vnote ok';
+    el.innerHTML = '✓ Voz <b>' + chosenVoice.name + '</b> (español de España), del navegador. Necesita internet; si no suena o se corta, cambie a «Profe Tomás · voz natural 1», que viene grabada en la página.';
   } else if (chosenVoice){
     el.className = 'vnote';
     el.innerHTML = 'Usando la voz del navegador: <b>' + chosenVoice.name + '</b>. Si suena robótica, vuelva a «voz natural 1».';
   }
 }
 if (synth){ loadVoices(); synth.onvoiceschanged = loadVoices; setTimeout(loadVoices, 800); } pickVoice();
-$('voiceSel').addEventListener('change', function(){ pickVoice(); if (playing) goTo(ex, step, true); });
+$('voiceSel').addEventListener('change', function(){ userPicked = true; pickVoice(); if (playing) goTo(ex, step, true); });
 
 function rate(){ return parseFloat($('rate').value) || 1; }
 function estimate(text){ var w = text.split(/\s+/).length; return Math.max(2500, w * 400 / rate()); }
