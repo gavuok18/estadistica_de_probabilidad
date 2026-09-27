@@ -850,6 +850,9 @@ body.perfil-admin .solo-admin{display:block}
 body.perfil-admin .solo-admin.inline{display:inline-flex}
 .entrega-acc{display:flex;gap:4px;justify-content:center}
 .entrega-acc button{width:26px;height:26px;padding:0;font-size:.78rem}
+/* ---------- Clase animada del Taller 4: la clase crece con su contenido ---------- */
+.clase-t4{padding:16px}
+.clase-t4 iframe{display:block;width:100%;height:760px;border:0;background:transparent}
 </style>
 <!-- ============================ NAV ============================ -->
 <header class="nav noprint">
@@ -864,6 +867,7 @@ body.perfil-admin .solo-admin.inline{display:inline-flex}
     <a href="#m3">3 · Teoría T1</a>
     <a href="#m4">4 · Teoría T2</a>
     <a href="#m5">5 · Taller 2</a>
+    <a href="#m14">&#9654; Clase T4</a>
     <a href="#m6">Zona de estudio</a>
     <a href="#m7">Laboratorio</a>
     <a href="#m8">Problemas</a>
@@ -891,6 +895,7 @@ body.perfil-admin .solo-admin.inline{display:inline-flex}
   <a href="#m3">3 · Teoría del Taller 1</a>
   <a href="#m4">4 · Teoría del Taller 2</a>
   <a href="#m5">5 · Taller 2 (pendiente)</a>
+  <a href="#m14">&#9654; Clase animada · Taller 4</a>
   <h4>Transversales</h4>
   <a href="#m6">Zona de estudio</a>
   <a href="#m7">Laboratorio interactivo</a>
@@ -917,7 +922,7 @@ body.perfil-admin .solo-admin.inline{display:inline-flex}
   Taller N.º 2, un laboratorio de herramientas, una zona de estudio por temas y un módulo de
   seguimiento de notas para el docente. Todo en un solo archivo y sin internet.</p>
   <div class="chips">
-    <span class="chip"><b>13</b>&nbsp;módulos</span>
+    <span class="chip"><b>14</b>&nbsp;módulos</span>
     <span class="chip g">&#10003; Taller 1 resuelto</span>
     <span class="chip v">7 herramientas interactivas</span>
     <span class="chip o">30+ ejercicios</span>
@@ -2684,6 +2689,69 @@ o los botones <em>Anterior / Siguiente</em> del pie de cada módulo. Atajos: <co
   <a href="#m4">Módulo 4</a> ya cubre toda la teoría que el taller puede pedir.</div>
 </section>
 <!-- ==================================================================
+     MÓDULO · CLASE ANIMADA DEL TALLER 4
+     La clase está en clase-taller4/ y se abre en el iframe la primera
+     vez que se entra al módulo (el script claseJS, al final).
+     ================================================================== -->
+<section class="mod" id="m14">
+  <div class="modhead t">
+    <div class="num">&#9654;</div>
+    <div>
+      <h2>Clase animada · Taller 4</h2>
+      <p>El Profe Tomás explica en voz alta los 13 ejercicios del Taller 4 —técnicas de conteo y probabilidad—
+      y escribe cada paso en el tablero. Dura unos 12 minutos. Se puede pausar, volver atrás, cambiar la
+      velocidad o saltar directo a un ejercicio.</p>
+    </div>
+  </div>
+
+  <div class="card clase-t4 noprint">
+    <iframe id="claseT4" title="Clase animada del Taller 4 con el Profe Tomás" data-src="clase-taller4/index.html" allow="fullscreen" allowfullscreen></iframe>
+    <div class="inline" style="margin-top:14px">
+      <button class="btn" id="claseT4Full" type="button">&#10530; Pantalla completa</button>
+      <a class="btn" href="clase-taller4/index.html" target="_blank" rel="noopener">&#8599; Abrir en una pestaña aparte</a>
+    </div>
+  </div>
+
+  <div class="box tip noprint"><span class="bt">Para verla en clase</span>
+  Suba el volumen antes de empezar. Con «Seguir al siguiente ejercicio» activado, la clase corre sola de principio
+  a fin; la barra espaciadora pausa y las flechas pasan de paso. Si no hay sonido, el guion completo está debajo.</div>
+
+  <h3 class="sec" id="m14guion">Guion de la clase</h3>
+  <details class="sol">
+    <summary>Lo que dice el Profe Tomás, ejercicio por ejercicio</summary>
+    <div class="body">
+      <h4 class="sub">Bienvenida</h4>
+      <p>¡Hola! Soy el profe Tomás. Hoy vamos a resolver, paso a paso, los trece ejercicios del taller cuatro de conteo y probabilidad. Antes de empezar, recuerden las dos preguntas que nos acompañan siempre en conteo: ¿importa el orden?, y ¿uso todos los elementos o solo algunos? Pueden pausar cuando quieran. ¡Empecemos!</p>
+      <h4 class="sub">P1 · Placas de 3 letras y 3 dígitos</h4>
+      <p>Ejercicio uno. Una placa tiene tres letras seguidas de tres dígitos, y se pueden repetir. ¿Cuántas placas distintas hay? Primero dibujamos seis casillas: tres para letras y tres para dígitos. Como llenamos una casilla y después la otra, usamos el principio multiplicativo. Cada letra tiene veintiséis opciones, y se pueden repetir. Veintiséis al cubo da 17576. Cada dígito tiene diez opciones, del cero al nueve. Diez al cubo es mil. Multiplicamos los dos bloques. Respuesta: diecisiete millones quinientas setenta y seis mil placas.</p>
+      <h4 class="sub">P2 · Simplificar factoriales</h4>
+      <p>Ejercicio dos. Vamos a calcular nueve factorial por dos factorial, dividido entre dos factorial por seis factorial. Lo primero es mirar qué se repite. El dos factorial está arriba y abajo, así que se cancela. Nos queda nueve factorial sobre seis factorial. El truco es no calcular los factoriales completos. Abrimos el nueve factorial hasta que aparezca el seis factorial: nueve por ocho por siete por seis factorial. Ahora el seis factorial se cancela, y solo quedan tres factores. Nueve por ocho es setenta y dos, y setenta y dos por siete es quinientos cuatro. La respuesta es quinientos cuatro.</p>
+      <h4 class="sub">P3 · Capitán y subcapitán / pareja</h4>
+      <p>Ejercicio tres. Tenemos doce jugadores. Primero elegimos capitán y subcapitán, y luego una pareja para dobles. Pregunta clave: ¿importa el orden? Para capitán y subcapitán, sí, porque son cargos distintos. Juan capitán y Pedro subcapitán no es lo mismo que al revés. Usamos una variación. Hay doce opciones para capitán, y quedan once para subcapitán. Doce por once, ciento treinta y dos. En la pareja de dobles el orden no importa: Juan con Pedro es la misma pareja que Pedro con Juan. Usamos combinación. Doce por once, dividido entre dos, da sesenta y seis parejas. Fíjense: ciento treinta y dos es el doble de sesenta y seis, porque cada pareja se puede ordenar de dos formas. Respuestas: ciento treinta y dos, y sesenta y seis.</p>
+      <h4 class="sub">P4 · Palabras con ESTADISTICA</h4>
+      <p>Ejercicio cuatro. ¿Cuántas palabras distintas se forman con las letras de la palabra estadística? Paso uno: contamos las letras. Son once. Paso dos: hacemos la lista de frecuencias. La ese, la te, la a y la i aparecen dos veces. La e, la de y la ce, una vez. Si sumamos, da once, así que la lista está bien. Paso tres: dividimos once factorial entre dos factorial cuatro veces, una por cada letra repetida. Se divide porque intercambiar dos letras iguales produce la misma palabra. Treinta y nueve millones novecientos dieciséis mil ochocientos, entre dieciséis, da dos millones cuatrocientas noventa y cuatro mil ochocientas palabras.</p>
+      <h4 class="sub">P5 · Números de cuatro cifras</h4>
+      <p>Ejercicio cinco. Con las cifras cero, dos, cuatro, seis y ocho, sin repetir, ¿cuántos números de cuatro cifras se pueden formar? Cuidado: un número no puede empezar en cero. Por eso empezamos por la primera casilla, que tiene solo cuatro opciones. En la segunda casilla ya sí puede ir el cero, así que hay cuatro opciones otra vez. Luego quedan tres, y después dos. Multiplicamos y obtenemos noventa y seis números. Verificamos por complemento. Sin restricción serían ciento veinte ordenaciones. Las que empiezan en cero son veinticuatro. Ciento veinte menos veinticuatro, noventa y seis. ¡Coincide!</p>
+      <h4 class="sub">P6 · Dos que no van juntos</h4>
+      <p>Ejercicio seis. De nueve estudiantes elegimos una comisión de tres, pero dos estudiantes, que llamaremos A y B, no pueden ir juntos. Una comisión es un grupo, así que el orden no importa. El total sin restricción es la combinación de nueve en tres: ochenta y cuatro. Ahora contamos lo prohibido: A y B juntos. Los fijamos y queda un solo cupo, que se elige entre los otros siete. Son siete comisiones. Al total le quitamos lo prohibido: ochenta y cuatro menos siete, setenta y siete comisiones. Verificamos por casos. Sin ninguno de los dos: treinta y cinco. Con exactamente uno de ellos: cuarenta y dos. En total, setenta y siete.</p>
+      <h4 class="sub">P7 · Ingenieros y técnicos</h4>
+      <p>Ejercicio siete. Formamos un equipo con tres ingenieros, escogidos entre seis, y dos técnicos, escogidos entre cinco. Primero los ingenieros: la combinación de seis en tres da veinte. Luego los técnicos: la combinación de cinco en dos da diez. Elegimos los ingenieros y también los técnicos, así que multiplicamos: doscientos equipos. Ojo: no se puede calcular la combinación de once en cinco, porque eso incluiría equipos con cualquier mezcla, por ejemplo cinco ingenieros y ningún técnico.</p>
+      <h4 class="sub">P8 · Seis personas en fila</h4>
+      <p>Ejercicio ocho. Seis personas se sientan en fila, pero dos de ellas no quieren quedar juntas. Sin restricción, las seis personas se ordenan de seis factorial formas: setecientas veinte. Ahora contamos cuando sí quedan juntas. Las pegamos en un bloque y quedan cinco objetos por ordenar: ciento veinte formas. Dentro del bloque se pueden intercambiar, así que multiplicamos por dos: doscientas cuarenta. Restamos: setecientos veinte menos doscientos cuarenta, cuatrocientas ochenta formas.</p>
+      <h4 class="sub">P9 · Ni carro ni moto</h4>
+      <p>Ejercicio nueve. De doscientas personas, ciento veinte tienen carro, noventa tienen moto y cuarenta tienen ambos. ¿Qué probabilidad hay de que una persona no tenga ninguno? Hacemos el diagrama de Venn. En la intersección van los cuarenta que tienen ambos. Solo carro: ciento veinte menos cuarenta, ochenta. Solo moto: noventa menos cuarenta, cincuenta. Carro o moto: ciento veinte más noventa, menos cuarenta. Restamos la intersección para no contarla dos veces. Da ciento setenta. Los que no tienen ninguno son doscientos menos ciento setenta: treinta personas. La probabilidad es treinta sobre doscientos, es decir, cero coma quince.</p>
+      <h4 class="sub">P10 · Tabla de contingencia</h4>
+      <p>Ejercicio diez. Con esta tabla calculamos dos cosas: la probabilidad de no trabajar dado que no usa transporte, y la probabilidad de trabajar o usar transporte. En una probabilidad condicional, lo más importante es el denominador. La condición es no usar transporte, así que el universo se reduce a esa columna: setenta estudiantes. De esos setenta, los que no trabajan son cuarenta. Cuarenta sobre setenta da cero coma cinco siete uno cuatro. Para la unión sumamos los que trabajan, cien, más los que usan transporte, ciento treinta, y restamos los que cumplen ambas cosas, setenta. Queda ciento sesenta sobre doscientos. Eso es cero coma ochenta. Verificación: la única casilla por fuera de la unión es la de cuarenta, y uno menos cuarenta sobre doscientos también da cero coma ochenta.</p>
+      <h4 class="sub">P11 · ¿Independientes o excluyentes?</h4>
+      <p>Ejercicio once. Nos dan tres probabilidades, y hay que decidir si los eventos son independientes y si son excluyentes. Para la independencia, multiplicamos las probabilidades: cero coma cuatro por cero coma cinco da cero coma dos. Es igual a la intersección. Entonces sí son independientes. Para ser excluyentes, la intersección tendría que ser cero. Pero es cero coma dos, así que no son excluyentes. Conclusión: son independientes, pero no excluyentes. Recuerden que son dos conceptos diferentes.</p>
+      <h4 class="sub">P12 · Fusibles sin reemplazo</h4>
+      <p>Ejercicio doce. En una caja hay cuatro fusibles buenos y dos defectuosos. Sacamos dos, sin reemplazo. ¿Cuál es la probabilidad de que al menos uno sea defectuoso? Cuando aparece la expresión al menos uno, usamos el complemento. Lo contrario de al menos un defectuoso es que ambos sean buenos. El primero bueno: cuatro de seis. Como no hay reemplazo, quedan tres buenos de cinco. Multiplicamos a lo largo de la rama y obtenemos dos quintos. Uno menos dos quintos es tres quintos, es decir, cero coma seis. Verificamos sumando las ramas favorables: bueno y defectuoso, defectuoso y bueno, y los dos defectuosos. Da dieciocho treintavos, cero coma seis.</p>
+      <h4 class="sub">P13 · Probabilidad total y Bayes</h4>
+      <p>Último ejercicio, el trece. Tres proveedores aportan el cincuenta, el treinta y el veinte por ciento de los insumos, con tasas de falla del uno, el dos y el cuatro por ciento. Bajamos por el árbol, multiplicando cada rama que termina en falla: cero coma cero cero cinco, cero coma cero cero seis y cero coma cero cero ocho. Probabilidad total: sumamos las tres ramas y obtenemos cero coma cero uno nueve. Ahora aplicamos Bayes, que es subir por el árbol. Si sabemos que hubo falla, ¿qué tan probable es que venga del proveedor tres? Tomamos su rama, cero coma cero cero ocho, y la dividimos entre la probabilidad total. Da cero coma cuatro dos uno uno. El proveedor tres aporta solo el veinte por ciento de los insumos, pero causa el cuarenta y dos por ciento de las fallas. Con esto terminamos el taller. ¡Muy buen trabajo! Repasen los pasos y nos vemos en la próxima clase.</p>
+    </div>
+  </details>
+</section>
+<!-- ==================================================================
      MÓDULO 6 · ZONA DE ESTUDIO
      ================================================================== -->
 <section class="mod" id="m6">
@@ -4323,7 +4391,7 @@ window.Lectura = {
    ================================================================== */
 $$("section.mod").forEach(s=> s.classList.add("view"));
 const VIEWS = $$("section.view");
-const ORDER = ["home","m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m12","m11","m13"];
+const ORDER = ["home","m1","m2","m3","m4","m5","m14","m6","m7","m8","m9","m10","m12","m11","m13"];
 const VNAME = {
   home:"Inicio",
   m1:"Módulo 1 · El módulo oficial",
@@ -4331,6 +4399,7 @@ const VNAME = {
   m3:"Módulo 3 · Teoría del Taller 1",
   m4:"Módulo 4 · Teoría del Taller 2",
   m5:"Módulo 5 · Taller 2 (pendiente)",
+  m14:"Clase animada · Taller 4",
   m6:"Zona de estudio",
   m7:"Laboratorio interactivo",
   m8:"Banco de problemas",
@@ -4346,6 +4415,7 @@ const VDESC = {
   m3:"Conjuntos, operaciones, tablas de contingencia y principios de probabilidad, desde cero.",
   m4:"Conteo, permutaciones, combinaciones, diagrama de árbol y Bayes: todo lo que pedirá el Taller 2.",
   m5:"Reservado para la solución del Taller 2 · entrega prevista 21/09/2026.",
+  m14:"El Profe Tomás explica en voz alta los 13 ejercicios del Taller 4, paso a paso en el tablero.",
   m6:"26 temas filtrables: definición, fórmulas, error típico y ejemplo de cada uno.",
   m7:"Siete herramientas que calculan, dibujan y verifican tus respuestas.",
   m8:"18 problemas graduados con solución oculta, listos para el tablero.",
@@ -4430,7 +4500,7 @@ function step(d){ const i=ORDER.indexOf(CURRENT)+d; if(i>=0 && i<ORDER.length) g
 /* lanzador de la portada */
 (function(){
   const L=$("#launcher"); if(!L) return;
-  const COLS={m12:"var(--violeta)",m13:"var(--verde)",m1:"var(--azul)",m2:"var(--verde)",m3:"var(--violeta)",m4:"var(--terra)",m5:"var(--dorado)",
+  const COLS={m12:"var(--violeta)",m13:"var(--verde)",m1:"var(--azul)",m2:"var(--verde)",m3:"var(--violeta)",m4:"var(--terra)",m5:"var(--dorado)",m14:"var(--terra)",
     m6:"var(--azul)",m7:"var(--violeta)",m8:"var(--verde)",m9:"var(--terra)",m10:"var(--dorado)"};
   ORDER.slice(1).forEach((id,k)=>{
     const c=el("div","zcard");
@@ -7180,10 +7250,10 @@ if($("#dRecuperar")) $("#dRecuperar").onclick=()=>{
 };
 
 /* ---------- 9 · ACTIVIDAD EN LA APP ---------- */
-const MODS_ACT = ["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m12"];
-const MOD_CORTO= {m1:"M1",m2:"M2",m3:"M3",m4:"M4",m5:"M5",m6:"ZE",m7:"Lab",m8:"Pbl",m9:"Aud",m10:"Ide",m12:"Tal"};
+const MODS_ACT = ["m1","m2","m3","m4","m5","m14","m6","m7","m8","m9","m10","m12"];
+const MOD_CORTO= {m1:"M1",m2:"M2",m3:"M3",m4:"M4",m5:"M5",m14:"Cla",m6:"ZE",m7:"Lab",m8:"Pbl",m9:"Aud",m10:"Ide",m12:"Tal"};
 const MOD_LARGO= {m1:"El módulo oficial",m2:"Taller 1 resuelto",m3:"Teoría del Taller 1",
-                  m4:"Teoría del Taller 2",m5:"Taller 2",m6:"Zona de estudio",m7:"Laboratorio",
+                  m4:"Teoría del Taller 2",m5:"Taller 2",m14:"Clase animada del Taller 4",m6:"Zona de estudio",m7:"Laboratorio",
                   m8:"Banco de problemas",m9:"Auditoría",m10:"Ideas",m12:"Talleres interactivos"};
 const TOTAL_EJ = 18;
 const POR_DEFECTO = ["m1","m3","m4","m6","m7","m8","m9"];
@@ -7235,6 +7305,7 @@ const MOD_NOTA = {
   m3:"Teoría de conjuntos, contingencia y probabilidad.",
   m4:"Conteo, permutaciones, combinaciones, árbol y Bayes.",
   m5:"⚠ Reservado para la solución del Taller 2: todavía no tiene contenido que leer.",
+  m14:"Clase en video con voz. La lectura mínima sale del guion, así que equivale a verla casi completa.",
   m6:"Buscador: el tema aparece al elegirlo, no es un texto corrido. Se mide el recorrido y el tiempo, no cuántos temas consultó.",
   m7:"7 herramientas de cálculo. Se mide el tiempo de uso, no una lectura seguida.",
   m8:"Aquí están los 18 ejercicios, que además se cuentan aparte.",
@@ -7623,10 +7694,10 @@ const LS={
 };
 
 /* Los módulos del estudiante. m11 y m13 son del docente y no se miden. */
-const MODULOS = ["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m12"];
+const MODULOS = ["m1","m2","m3","m4","m5","m14","m6","m7","m8","m9","m10","m12"];
 const NOMBRE_MOD = {
   m1:"El módulo oficial", m2:"Taller 1 resuelto", m3:"Teoría del Taller 1",
-  m4:"Teoría del Taller 2", m5:"Taller 2", m6:"Zona de estudio",
+  m4:"Teoría del Taller 2", m5:"Taller 2", m14:"Clase animada del Taller 4", m6:"Zona de estudio",
   m7:"Laboratorio", m8:"Banco de problemas", m9:"Auditoría",
   m10:"Ideas", m12:"Talleres interactivos"
 };
@@ -8152,6 +8223,42 @@ window.Progreso = {
 
 pintarPuerta();
 setTimeout(pintarPuerta, 1500);
+})();
+</script>
+<script id="claseJS">
+/* ==================================================================
+   CLASE ANIMADA DEL TALLER 4 (m14)
+   La clase vive en clase-taller4/ y se abre aquí en un iframe. Se carga
+   la primera vez que se entra al módulo —trae MathJax y la voz—, sigue
+   el tema claro u oscuro del aula y se pausa al salir del módulo. Todo
+   va por postMessage, así que también funciona abierta desde el disco.
+   ================================================================== */
+(function(){
+"use strict";
+const f=document.getElementById("claseT4"); if(!f) return;
+const avisar=m=>{ try{ f.contentWindow.postMessage(m,"*"); }catch(e){} };
+const tema=()=> avisar({clase:"tema", valor:document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light"});
+
+function cargar(){ if(!f.getAttribute("src")) f.src=f.dataset.src; }
+f.addEventListener("load", tema);
+new MutationObserver(tema).observe(document.documentElement,{attributes:true, attributeFilter:["data-theme"]});
+
+/* el alto que dice la clase; con el módulo oculto el iframe no mide nada fiable */
+addEventListener("message", e=>{
+  if(e.source!==f.contentWindow || !e.data || e.data.clase!=="alto" || !f.offsetWidth) return;
+  const h=+e.data.alto; if(h>0) f.style.height=Math.ceil(h)+"px";
+});
+
+document.addEventListener("modulo-abierto", e=>{
+  if(e.detail && e.detail.id==="m14") cargar(); else avisar({clase:"pausar"});
+});
+const sec=document.getElementById("m14");
+if(sec && sec.classList.contains("on")) cargar();   /* se entró directo con #m14 */
+
+const b=document.getElementById("claseT4Full");
+const pedir=f.requestFullscreen || f.webkitRequestFullscreen;
+if(!pedir) b.style.display="none";                  /* iPhone: no deja poner un iframe en pantalla completa */
+else b.onclick=()=>{ cargar(); pedir.call(f); };
 })();
 </script>
 <script src="config.js"></script>
