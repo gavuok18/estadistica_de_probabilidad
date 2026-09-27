@@ -20,14 +20,15 @@ que el docente lleve las notas del grupo.
 | 3 · Teoría del Taller 1 | Conjuntos, operaciones, contingencia, probabilidad |
 | 4 · Teoría del Taller 2 | Conteo, permutaciones, combinaciones, árbol, Bayes |
 | 5 · Taller 2 | Pendiente del enunciado |
-| 6 · Zona de estudio | 26 temas con buscador y filtros |
-| 7 · Laboratorio | 7 herramientas interactivas de cálculo |
-| 8 · Problemas | 18 ejercicios graduados con solución |
-| 9 · Auditoría | Erratas encontradas en el material oficial |
-| 10 · Ideas | Propuestas de ampliación |
-| 11 · Seguimiento y notas | Planilla del docente, Excel y certificados |
-| 12 · Talleres interactivos | Talleres autocalificados para el estudiante |
-| 13 · Talleres y entregas | Panel del docente: talleres, entregas, accesos y actividad |
+| 6 · Clase animada · Taller 4 | El Profe Tomás explica en voz alta los 13 ejercicios, paso a paso en el tablero |
+| 7 · Zona de estudio | 26 temas con buscador y filtros |
+| 8 · Laboratorio | 7 herramientas interactivas de cálculo |
+| 9 · Problemas | 18 ejercicios graduados con solución |
+| 10 · Auditoría | Erratas encontradas en el material oficial |
+| 11 · Ideas | Propuestas de ampliación |
+| 12 · Seguimiento y notas | Planilla del docente, Excel y certificados |
+| 13 · Talleres interactivos | Talleres autocalificados para el estudiante |
+| 14 · Talleres y entregas | Panel del docente: talleres, entregas, accesos y actividad |
 
 ## Acceso
 
@@ -71,6 +72,17 @@ Seguimiento y asistencia = 50 % asistencia presencial + 50 % actividad en la app
 
 Los cuatro porcentajes se editan, igual que la lista de módulos que se exigen. Quien no ha entrado
 nunca cuenta 1,0 en la mitad de la app, y la aplicación avisa de cuántos están en ese caso.
+
+## Clase animada del Taller 4
+
+El módulo *Clase animada · Taller 4* abre la clase del Profe Tomás, que resuelve en voz alta los 13
+ejercicios del taller y los va escribiendo en el tablero. Se puede pausar, volver atrás, cambiar la
+velocidad y la voz, o saltar a un ejercicio; el guion completo queda debajo, por si no hay sonido.
+
+La clase está en [`clase-taller4/`](clase-taller4/) y también se abre sola, sin el aula. Las voces
+son un mp3 por paso y se descargan a medida que suenan, así que empieza enseguida aun con datos del
+celular. Cuenta en el seguimiento como cualquier otro módulo: el tiempo mínimo sale del guion, y
+equivale a verla casi completa.
 
 ## Talleres interactivos
 
@@ -135,6 +147,7 @@ del grupo solo los lee el docente.
 index.html        la aplicación completa
 config.js         configuración de Firebase (editar)
 firestore.rules   reglas de seguridad de la base de datos
+clase-taller4/    la clase animada del Taller 4: la página y las dos voces, un mp3 por paso
 ```
 
 ## Créditos y licencia
